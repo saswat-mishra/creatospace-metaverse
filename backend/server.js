@@ -80,10 +80,13 @@ app.get("/", (req, res) => {
 app.post("/login", (req, res) => {
   try {
     if (req.body && req.body.username && req.body.password) {
+      console.log(req.body);
+
       user.find({ username: req.body.username }, (err, data) => {
+        console.log(data);
         if (data.length > 0) {
 
-          if (bcrypt.compareSync(data[0].password, req.body.password)) {
+          if (bcrypt.compareSync(req.body.password, data[0].password)) {
             checkUserAndGenerateToken(data[0], req, res);
           } else {
 
@@ -328,7 +331,7 @@ var jwt = require('jsonwebtoken');
 
 app.post("/token", (req, res) => {
   try {
-    // console.log(req.body.room_id, req.body.user_id, req.body.role)
+    console.log(req.body.room_id, req.headers, req.body.role)
     if (req.body && req.body.room_id && req.body.role) {
       var payload = {
         access_key: "62bb69b476f8697390a6a7da",

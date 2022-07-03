@@ -17,8 +17,8 @@ function Login() {
   const [password, setPassword] = useState('')
 
   const axios = require('axios');
-  const bcrypt = require('bcryptjs');
-  var salt = bcrypt.genSaltSync(10);
+  // const bcrypt = require('bcryptjs');
+  // var salt = bcrypt.genSaltSync(10);
 
 
   // const onChange = (e) => this.setState({ [e.target.name]: e.target.value });
@@ -34,14 +34,15 @@ function Login() {
       username: username,
       password: password,
     }).then((res) => {
+
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('user_id', res.data.id);
       console.log(history, 'test1')
-      history.push("/dashboard")
-      console.log(history, 'test2')
+      history.push("/feed")
+      // console.log(history, 'test2')
     }).catch((err) => {
       if (err.response && err.response.data && err.response.data.errorMessage) {
-        swal({
+        new swal({
           text: err.response.data.errorMessage,
           icon: "error",
           type: "error"

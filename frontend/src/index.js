@@ -4,12 +4,15 @@ import './index.css';
 import App from './App';
 import { BrowserRouter } from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
+import { HMSRoomProvider } from "@100mslive/react-sdk";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <HMSRoomProvider>
+        <App />
+      </HMSRoomProvider>
     </BrowserRouter>
   </React.StrictMode>
 );

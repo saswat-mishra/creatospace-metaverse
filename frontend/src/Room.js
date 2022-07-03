@@ -7,7 +7,7 @@ function Room() {
 
     return (
       <div>
-        {/* <JoinForm></JoinForm> */}
+        <JoinForm></JoinForm>
       </div>
     );
 }

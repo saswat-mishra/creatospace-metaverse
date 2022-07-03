@@ -1,5 +1,5 @@
 import React, { Component, useState } from 'react';
-import swal from 'sweetalert2';
+// import swal from 'sweetalert2';
 import { Button, TextField, Link, Grid } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
@@ -13,6 +13,7 @@ function Register() {
   //     confirm_password: ''
   //   };
   // }
+  const swal = require('sweetalert2')
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [confirm_password, setConfirm_password] = useState('')
@@ -25,11 +26,11 @@ function Register() {
   const register = () => {
     console.log(username, password);
 
-    axios.post('http://localhost:2000/register', JSON.stringify({
+    axios.post('http://localhost:2000/register', {
       username: username,
       password: password,
-    })).then((res) => {
-      swal({
+    }).then((res) => {
+      new swal({
         text: res.data.title,
         icon: "success",
         type: "success"
@@ -37,7 +38,7 @@ function Register() {
       history.push('/');
     }).catch((err) => {
       console.log(err);
-      swal({
+      new swal({
         text: err.response.data.errorMessage,
         icon: "error",
         type: "error"
