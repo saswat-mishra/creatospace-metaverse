@@ -2,16 +2,18 @@ import React from 'react';
 import './Profilecard.css'
 
 function Profilecard(props) {
-    console.log(props);
+    // console.log(props);
     const name  = props.name;
+    const desc = props.desc;
+    const price = props.price
 
     return (
         <div class='card'>
             <div class="card-container">
-                <span class="pro">PRO</span>
+                <span class="pro">{price}</span>
                 <img class="round" src="https://randomuser.me/api/portraits/women/79.jpg" alt="user" />
                 <h3 class='name'>{name}</h3>
-                <h1>Finance 101</h1>
+                <h1>{desc}</h1>
                 <div class="buttons">
                     <button class="primary">
                         Join the room

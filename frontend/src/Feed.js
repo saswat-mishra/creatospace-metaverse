@@ -1,4 +1,4 @@
-import { Grid, Paper, styled } from '@mui/material';
+import { Grid } from '@mui/material';
 import React, { useState } from 'react';
 import Profilecard from './components/Profilecard';
 import './Feed.css'
@@ -13,17 +13,18 @@ const axios = require('axios');
 
 
 function Feed() {
-    var rooms = [];
+    var [rooms, setRooms] = useState([]);
+    // var roomlist = [];
     axios.get('http://localhost:2000/all-rooms',
     ).then((res) => {
-        rooms = res.data;
-        console.log(rooms)
+        setRooms(res.data.data);
+        // console.log(rooms)
     }).catch((err) => {
         if (err.response && err.response.data && err.response.data.errorMessage) {
             console.log(err);
         }
     });
-
+    
 
     return (
         <div>
@@ -35,7 +36,7 @@ function Feed() {
                 </Grid>
                 {rooms.map((e) => (
                     <Grid item md={12} >
-                        <Profilecard name={e.name}></Profilecard>
+                        <Profilecard name={e.name} desc={e.desc} price={e.price}></Profilecard>
                     </Grid>
                 ))}
             </Grid>
