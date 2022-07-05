@@ -2,6 +2,7 @@ import { Grid, Paper, styled } from '@mui/material';
 import React, { useState } from 'react';
 import Profilecard from './components/Profilecard';
 import './Feed.css'
+const axios = require('axios');
 
 // const Item = styled(Paper)(({ theme }) => ({
 //     ...theme.typography.body2,
@@ -12,26 +13,31 @@ import './Feed.css'
 
 
 function Feed() {
-    const users = [];
+    var rooms = [];
+    axios.get('http://localhost:2000/all-rooms',
+    ).then((res) => {
+        rooms = res.data;
+        console.log(rooms)
+    }).catch((err) => {
+        if (err.response && err.response.data && err.response.data.errorMessage) {
+            console.log(err);
+        }
+    });
+
 
     return (
         <div>
             <Grid container spacing={12}>
                 <Grid item md={6}>
-                    <div class='heading'>
-                    <h1>Join your favourite events here!</h1>
+                    <div>
+                        <h1>Join your favourite events here!</h1>
                     </div>
                 </Grid>
-                <Grid item md={12} >
-                    {/* <Item> */}
-                        <Profilecard></Profilecard>
-                    {/* </Item> */}
-                </Grid>
-                <Grid item md={12} >
-                    {/* <Item> */}
-                        <Profilecard></Profilecard>
-                    {/* </Item> */}
-                </Grid>
+                {rooms.map((e) => (
+                    <Grid item md={12} >
+                        <Profilecard name={e.name}></Profilecard>
+                    </Grid>
+                ))}
             </Grid>
 
         </div>

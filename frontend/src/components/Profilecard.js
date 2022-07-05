@@ -2,14 +2,15 @@ import React from 'react';
 import './Profilecard.css'
 
 function Profilecard(props) {
-
+    console.log(props);
+    const name  = props.name;
 
     return (
         <div class='card'>
             <div class="card-container">
                 <span class="pro">PRO</span>
                 <img class="round" src="https://randomuser.me/api/portraits/women/79.jpg" alt="user" />
-                <h3 class='name'>Ricky Park</h3>
+                <h3 class='name'>{name}</h3>
                 <h1>Finance 101</h1>
                 <div class="buttons">
                     <button class="primary">

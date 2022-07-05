@@ -4,9 +4,8 @@ var Schema = mongoose.Schema;
 roomSchema = new Schema( {
 	name: String,
 	desc: String,
-	price: Number,
-	image: String,
-	discount: Number,
+	price: String,
+	hms_id: String,
 	user_id: Schema.ObjectId,
 	is_delete: { type: Boolean, default: false },
 	joinees: {type: [Schema.ObjectId], default:  []},
