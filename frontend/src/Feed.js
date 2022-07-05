@@ -30,8 +30,8 @@ function Feed() {
         <div>
             <Grid container spacing={12}>
                 <Grid item md={6}>
-                    <div>
-                        <h1>Join your favourite events here!</h1>
+                    <div class='heading'>
+                    <h1>Join your favourite events here!</h1>
                     </div>
                 </Grid>
                 {rooms.map((e) => (

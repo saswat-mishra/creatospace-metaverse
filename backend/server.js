@@ -7,12 +7,11 @@ var multer = require('multer'),
   bodyParser = require('body-parser'),
   path = require('path');
 var mongoose = require("mongoose");
-mongoose.connect("mongodb+srv://creatospacemeta:Wx80Hq6fKZxeFg42@cluster0.9no6t.mongodb.net/?retryWrites=true&w=majority", { useNewUrlParser: true });
+mongoose.connect("mongodb://localhost/creatospace");
+// mongodb+srv://creatospacemeta:Wx80Hq6fKZxeFg42@cluster0.9no6t.mongodb.net/?retryWrites=true&w=majority
 var fs = require('fs');
 var room = require("./model/room.js");
 var user = require("./model/user.js");
-var jwt = require('jsonwebtoken');
-var uuid4 = require('uuid4');
 
 var dir = './uploads';
 var upload = multer({
@@ -49,7 +48,7 @@ app.use("/", (req, res, next) => {
       next();
     } else {
       /* decode jwt token if authorized*/
-      jwt.verify('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoic2FzIiwiaWQiOiI2MmMzNDk5MWMwOTI5Mjk4OTIxZTg4MTciLCJpYXQiOjE2NTY5NjU1MjksImV4cCI6MTY1NzA1MTkyOX0.titaLLhNW8kcZKWMbMDBYkT-wc8YXLQcFOfRuJJpEw0', 'shhhhh11111', function (err, decoded) {
+      jwt.verify(req.headers.token, 'shhhhh11111', function (err, decoded) {
         if (decoded && decoded.user) {
           req.user = decoded;
           next();
@@ -80,6 +79,7 @@ app.get("/", (req, res) => {
 
 /* login api */
 app.post("/login", (req, res) => {
+  //google Oauth login 
   try {
     if (req.body && req.body.username && req.body.password) {
       console.log(req.body);
@@ -188,60 +188,18 @@ function checkUserAndGenerateToken(data, req, res) {
 }
 
 /* Api to add room */
-//curl https://prod-in2.100ms.live/api/v2/rooms -H 'Authorization: Bearer  <management_token>' -X POST -H 'Content-Type: application/json' -d '{"name": "test-room", "description": "This is a test room", "recording_info": {"enabled": true, "upload_info": {"type": "s3", "location": "test-bucket", "prefix": "test-prefix", "options": {"region": "ap-south-1"}, "credentials": {"key": "aws-access-key", "secret": "aws-secret-key"}}}}'
-var axios = require('axios');
-// const { token } = require("./utils/hmsmangtoken.js");
-// var mang = require('./utils/hmsmangtoken.js')
-var app_access_key = '62bb69b476f8697390a6a7da';
-var app_secret = 'V3s1siiqQZfBoBuVHgb_OUUkkl6cFzfsRxK-GsmkXwZepVLZiyna8ZSRAIBZuvO6TqppYx9bBZseApyWAFCKRounMCvAqdGAX9-xA3vsUusWr4xGkHqEWaLjL4xRcgE5TDDZ-jkNISuWlAoKDc-utBUg-ya2b_zgywuUeIudF1Q=';
-const token = jwt.sign(
-  {
-    access_key: app_access_key,
-    type: 'management',
-    version: 2,
-    iat: Math.floor(Date.now() / 1000),
-    nbf: Math.floor(Date.now() / 1000)
-  },
-  app_secret,
-  {
-    algorithm: 'HS256',
-    expiresIn: '24h',
-    jwtid: uuid4()
-  }
-);
-console.log(token);
-
-app.post("/add-room", (req, res) => {
+app.post("/add-room", upload.any(), (req, res) => {
   try {
+    if (req.files && req.body && req.body.name && req.body.desc && req.body.price &&
+      req.body.discount) {
 
-    if (req.body && req.body.name && req.body.desc && req.body.price) {
       let new_room = new room();
-      axios.post('https://prod-in2.100ms.live/api/v2/rooms',
-        JSON.stringify(
-          {
-            name: "test-room",
-            description: "This is a test room",
-            recording_info: { "enabled": true, "upload_info": { "type": "s3", "location": "test-bucket", "prefix": "test-prefix", "options": { "region": "ap-south-1" }, "credentials": { "key": "aws-access-key", "secret": "aws-secret-key" } } }
-          }
-        ),
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        }).then((res) => {
-          new_room.hms_id = res.data.id;
-          new_room.save();
-        }).catch((err) => {
-          console.log(err);
-        })
-
-
       new_room.name = req.body.name;
       new_room.desc = req.body.desc;
       new_room.price = req.body.price;
+      new_room.image = req.files[0].filename;
+      new_room.discount = req.body.discount;
       new_room.user_id = req.user.id;
-      console.log(new_room);
       new_room.save((err, data) => {
         if (err) {
           res.status(400).json({
@@ -271,37 +229,10 @@ app.post("/add-room", (req, res) => {
 });
 
 /* Api to update room */
-app.post("/get-room", (req, res) => {
-  try {
-    console.log(req.body);
-    if (req.body.id) {
-
-      room.findById(req.body.id, (err, new_room) => {
-        res.status(200).json({
-          data: new_room,
-          status: true
-        });
-      })
-
-    } else {
-      res.status(400).json({
-        errorMessage: 'Add proper parameter first!',
-        status: false
-      });
-    }
-  } catch (e) {
-    res.status(400).json({
-      errorMessage: 'Something went wrong!',
-      status: false
-    });
-  }
-});
-
-/* Api to update room */
 app.post("/update-room", upload.any(), (req, res) => {
   try {
-    if (req.body && req.body.name && req.body.desc && req.body.price &&
-      req.body.id) {
+    if (req.files && req.body && req.body.name && req.body.desc && req.body.price &&
+      req.body.id && req.body.discount) {
 
       room.findById(req.body.id, (err, new_room) => {
 
@@ -322,6 +253,9 @@ app.post("/update-room", upload.any(), (req, res) => {
         }
         if (req.body.price) {
           new_room.price = req.body.price;
+        }
+        if (req.body.discount) {
+          new_room.discount = req.body.discount;
         }
 
         new_room.save((err, data) => {
@@ -394,52 +328,49 @@ app.post("/add-joinee", (req, res) => {
   }
 });
 
-function token2(room_id, user_id, role) {
-  var payload = {
-    access_key: "62bb69b476f8697390a6a7da",
-    room_id: room_id,
-    user_id: user_id,
-    role: role,
-    type: 'app',
-    version: 2,
-    iss: 'http://localhost:3000',
-    iat: Math.floor(Date.now() / 1000),
-    nbf: Math.floor(Date.now() / 1000)
-  };
-  var secret = "V3s1siiqQZfBoBuVHgb_OUUkkl6cFzfsRxK-GsmkXwZepVLZiyna8ZSRAIBZuvO6TqppYx9bBZseApyWAFCKRounMCvAqdGAX9-xA3vsUusWr4xGkHqEWaLjL4xRcgE5TDDZ-jkNISuWlAoKDc-utBUg-ya2b_zgywuUeIudF1Q"
-  // console.log(secret, payload, "1");
-
-  // console.log(secret, "1");
-  const tok = jwt.sign(
-    payload,
-    secret,
-    {
-      algorithm: 'HS256',
-      expiresIn: '24h',
-      jwtid: uuid4()
-    }
-  );
-
-  return tok;
-}
+var jwt = require('jsonwebtoken');
+      var uuid4 = require('uuid4');
 
 app.post("/token", (req, res) => {
   try {
-    // console.log(req.body.room_id, req.headers, req.body.role)
+    console.log(req.body.room_id, req.headers, req.body.role)
     if (req.body && req.body.room_id && req.body.role) {
-      const to = token2(req.body.room_id, req.user.id, req.body.role)
-      if (to) {
-        // console.log( jwt.verify('token', secret))
-        res.status(200).json({
-          status: true,
-          title: to
-        })
-      } else {
-        res.status(400).json({
-          errorMessage: 'No tokens!',
-          status: false
-        });
-      }
+      var payload = {
+        access_key: "62bb69b476f8697390a6a7da",
+        room_id: req.body.room_id,
+        user_id: req.user.id,
+        role: req.body.role,
+        type: 'app',
+        version: 2,
+        iat: Math.floor(Date.now() / 1000),
+        nbf: Math.floor(Date.now() / 1000)
+      };
+      var secret = "V3s1siiqQZfBoBuVHgb_OUUkkl6cFzfsRxK-GsmkXwZepVLZiyna8ZSRAIBZuvO6TqppYx9bBZseApyWAFCKRounMCvAqdGAX9-xA3vsUusWr4xGkHqEWaLjL4xRcgE5TDDZ-jkNISuWlAoKDc-utBUg-ya2b_zgywuUeIudF1Q"
+      console.log(secret, payload, "1");
+      
+      console.log(secret, "1");
+      jwt.sign(
+        payload,
+        secret,
+        {
+          algorithm: 'HS256',
+          expiresIn: '24h',
+          jwtid: uuid4()
+        },
+        function (err, token) {
+          if (token){
+            res.status(200).json({
+              status: true,
+              title: token
+            })
+          } else {
+            res.status(400).json({
+              errorMessage: 'No tokens!',
+              status: false
+            });
+          }
+        }
+      );
     }
   } catch (e) {
     res.status(400).json({
@@ -479,30 +410,6 @@ app.post("/delete-room", (req, res) => {
     });
   }
 });
-
-/* Api to get all rooms */
-app.get("/all-rooms", (req, res) => {
-  try {
-    room.find((err, rooms) => {
-      // console.log(rooms);
-      res.status(200).json({
-        data: rooms,
-        status: true
-      });
-    })
-    // console.log(room.findById('62c15c6d9f6887b2bcde8a5a'));
-    // res.status(200).json({
-    //   status: true,
-    //   data: rooms
-    // });
-  } catch (e) {
-    res.status(400).json({
-      errorMessage: 'Something went wrong!',
-      status: false
-    });
-  }
-});
-
 
 // /*Api to get and search room with pagination and search by name*/
 // app.get("/get-room", (req, res) => {
@@ -574,7 +481,7 @@ app.get("/get-room", (req, res) => {
     }
     var perPage = 5;
     var page = req.query.page || 1;
-    room.find(query, { date: 1, name: 1, id: 1, desc: 1, price: 1 })
+    room.find(query, { date: 1, name: 1, id: 1, desc: 1, price: 1, discount: 1, image: 1 })
       .skip((perPage * page) - perPage).limit(perPage)
       .then((data) => {
         room.find(query).count()

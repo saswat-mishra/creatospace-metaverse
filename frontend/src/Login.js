@@ -2,7 +2,9 @@ import React, { Component, useState } from 'react';
 import swal from 'sweetalert2'
 import { Button, TextField, Link } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { GoogleLogin } from 'react-google-login';
 
+const client_id = "215504042537-v5rsk5ss23ktuo28ipe0uq9lm6s01t1i.apps.googleusercontent.com";
 
 function Login() {
   // constructor(props) {
@@ -49,6 +51,13 @@ function Login() {
         });
       }
     });
+  }
+  const onSuccess = (res) => {
+    console.log("Login Success. Current User: ", res.profileObj);
+    login();
+  }
+  const onFailure = (res) => {
+    console.log("Login Failed. res: ", res);
   }
 
   return (
@@ -97,6 +106,16 @@ function Login() {
         <Link href="/register">
           Register
         </Link>
+      </div>
+      <div id="signInButton">
+        <GoogleLogin 
+         client_id = {client_id}
+         buttonText= "Login with Google"
+         onSuccess= {onSuccess}
+         onFailure= {onFailure}
+         cookiePolicy= {'single_host_origin'}
+         isSignedIn= {true}
+         />
       </div>
     </div>
   );
