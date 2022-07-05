@@ -39,7 +39,9 @@ function Register() {
     }).catch((err) => {
       console.log(err);
       new swal({
-        text: err.response.data.errorMessage,
+        // text: err.response.data.errorMessage,
+        text: err.message,
+        // text: err,
         icon: "error",
         type: "error"
       });
