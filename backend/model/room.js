@@ -5,6 +5,7 @@ roomSchema = new Schema( {
 	name: String,
 	desc: String,
 	price: Number,
+	hms_id: String,
 	image: String,
 	user_id: Schema.ObjectId,
 	is_delete: { type: Boolean, default: false },

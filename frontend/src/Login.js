@@ -10,12 +10,12 @@ function Login() {
   // constructor(props) {
   //   super(props);
   //   this.state = {
-  //     username: '',
+  //     email: '',
   //     password: ''
   //   };
   // }
   // let navigate = useNavigate();
-  const [username, setUsername] = useState('')
+  const [email, setemail] = useState('')
   const [password, setPassword] = useState('')
 
   const axios = require('axios');
@@ -33,13 +33,13 @@ function Login() {
 
 
     axios.post('http://localhost:2000/login', {
-      username: username,
+      email: email,
       password: password,
     }).then((res) => {
 
-      localStorage.setItem('token', res.data.token);
-      localStorage.setItem('user_id', res.data.id);
-      console.log(history, 'test1')
+      localStorage.setItem('token', res.data.data.token);
+      localStorage.setItem('user_id', res.data.data.uid);
+      console.log(res);
       history.push("/feed")
       // console.log(history, 'test2')
     }).catch((err) => {
@@ -71,10 +71,10 @@ function Login() {
           id="standard-basic"
           type="text"
           autoComplete="off"
-          name="username"
+          name="email"
           onChange={
             (e) => {
-              setUsername(e.target.value)
+              setemail(e.target.value)
             }}
           placeholder="User Name"
           required
@@ -98,7 +98,7 @@ function Login() {
           variant="contained"
           color="primary"
           size="small"
-          disabled={username == '' && password == ''}
+          disabled={email == '' && password == ''}
           onClick={login}
         >
           Login

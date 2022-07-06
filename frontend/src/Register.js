@@ -8,13 +8,13 @@ function Register() {
   // constructor(props) {
   //   super(props);
   //   this.state = {
-  //     username: '',
+  //     email: '',
   //     password: '',
   //     confirm_password: ''
   //   };
   // }
   const swal = require('sweetalert2')
-  const [username, setUsername] = useState('')
+  const [email, setemail] = useState('')
   const [password, setPassword] = useState('')
   const [confirm_password, setConfirm_password] = useState('')
 
@@ -24,10 +24,10 @@ function Register() {
   const axios = require('axios');
 
   const register = () => {
-    console.log(username, password);
+    console.log(email, password);
 
     axios.post('http://localhost:2000/register', {
-      username: username,
+      email: email,
       password: password,
     }).then((res) => {
       new swal({
@@ -64,9 +64,9 @@ function Register() {
               id="standard-basic"
               type="text"
               autoComplete="off"
-              name="username"
-              value={username}
-              onChange={(e) => { setUsername(e.target.value) }}
+              name="email"
+              value={email}
+              onChange={(e) => { setemail(e.target.value) }}
               placeholder="User Name"
               required
             />
@@ -98,7 +98,7 @@ function Register() {
               variant="contained"
               color="primary"
               size="small"
-              disabled={username == '' && password == ''}
+              disabled={email == '' && password == ''}
               onClick={register}
             >
               Register

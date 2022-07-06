@@ -14,8 +14,15 @@ const axios = require('axios');
 
 function Feed() {
     var [rooms, setRooms] = useState([]);
+    const token = localStorage.getItem('token');
     // var roomlist = [];
-    axios.get('http://localhost:2000/all-rooms',
+    axios.get('http://localhost:2000/all-rooms', {
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          'Content-Type': 'application/json',
+          'token': token
+        }
+      }
     ).then((res) => {
         setRooms(res.data.data);
         // console.log(rooms)
@@ -30,7 +37,7 @@ function Feed() {
         <div>
             <Grid container spacing={12}>
                 <Grid item md={6}>
-                    <div class='heading'>
+                    <div className='heading'>
                     <h1>Join your favourite events here!</h1>
                     </div>
                 </Grid>
