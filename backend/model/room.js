@@ -4,7 +4,7 @@ var Schema = mongoose.Schema;
 roomSchema = new Schema( {
 	name: String,
 	desc: String,
-	price: Number,
+	price: String,
 	hms_id: String,
 	image: String,
 	user_id: Schema.ObjectId,

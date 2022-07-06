@@ -25,7 +25,7 @@ function Feed() {
       }
     ).then((res) => {
         setRooms(res.data.data);
-        // console.log(rooms)
+        console.log(rooms)
     }).catch((err) => {
         if (err.response && err.response.data && err.response.data.errorMessage) {
             console.log(err);

@@ -215,6 +215,181 @@ const token = jwt.sign(
 );
 console.log(token);
 
+app.post("/add-roles", (req, res) => {
+  try {
+    console.log(token);
+    let temp;
+    axios
+      .post(
+        "https://prod-policy.100ms.live/policy/v1/templates",
+        JSON.stringify({
+          name: "test-template",
+          default: true,
+          roles: {
+            speaker: {
+              name: "speaker",
+              publishParams: {
+                allowed: ["video", "screen", "audio"],
+                audio: {
+                  bitRate: 32,
+                  codec: "opus",
+                },
+                video: {
+                  bitRate: 250,
+                  codec: "vp8",
+                  frameRate: 30,
+                  width: 480,
+                  height: 270,
+                },
+                screen: {
+                  codec: "vp8",
+                  frameRate: 10,
+                  width: 1920,
+                  height: 1080,
+                },
+              },
+            },
+          },
+        }),
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((r) => {
+        temp = r;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    if (temp) {
+      res.status(200).json({
+        status: true,
+        data: temp,
+      });
+    } else {
+      res.status(400).json({
+        status: false,
+        errorMessage: "No template!",
+      });
+    }
+  } catch (e) {
+    res.status(400).json({
+      errorMessage: "Something went wrong!",
+      status: false,
+    });
+  }
+});
+const createroom = axios
+  .post(
+    "https://prod-in2.100ms.live/api/v2/rooms",
+    JSON.stringify({
+      name: "test-room",
+      description: "This is a test room",
+      recording_info: {
+        enabled: true,
+        upload_info: {
+          type: "s3",
+          location: "test-bucket",
+          prefix: "test-prefix",
+          options: { region: "ap-south-1" },
+          credentials: {
+            key: "aws-access-key",
+            secret: "aws-secret-key",
+          },
+        },
+      },
+    }),
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    }
+  )
+  .then((res) => {
+    return res.data.id;
+    // new_room.save();
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+
+app.post("/add-room", (req, res) => {
+  try {
+    if (req.body && req.body.name && req.body.desc && req.body.price) {
+      let new_room = new room();
+      // axios
+      //   .post(
+      //     "https://prod-in2.100ms.live/api/v2/rooms",
+      //     JSON.stringify({
+      //       name: "test-room",
+      //       description: "This is a test room",
+      //       recording_info: {
+      //         enabled: true,
+      //         upload_info: {
+      //           type: "s3",
+      //           location: "test-bucket",
+      //           prefix: "test-prefix",
+      //           options: { region: "ap-south-1" },
+      //           credentials: {
+      //             key: "aws-access-key",
+      //             secret: "aws-secret-key",
+      //           },
+      //         },
+      //       },
+      //     }),
+      //     {
+      //       headers: {
+      //         Authorization: `Bearer ${token}`,
+      //         "Content-Type": "application/json",
+      //       },
+      //     }
+      //   )
+      //   .then((res) => {
+      //     new_room.hms_id = res.data.id;
+      //     new_room.save();
+      //   })
+      //   .catch((err) => {
+      //     console.log(err);
+      //   });
+
+      new_room.name = req.body.name;
+      new_room.desc = req.body.desc;
+      new_room.price = req.body.price;
+      new_room.hms_id = createroom();
+      new_room.image = req.files[0].filename;
+      new_room.discount = req.body.discount;
+      new_room.user_id = req.user.id;
+      console.log(new_room);
+      new_room.save((err, data) => {
+        if (err) {
+          res.status(400).json({
+            errorMessage: err,
+            status: false,
+          });
+        } else {
+          res.status(200).json({
+            status: true,
+            title: "room Added successfully.",
+          });
+        }
+      });
+    } else {
+      res.status(400).json({
+        errorMessage: "Add proper parameter first!",
+        status: false,
+      });
+    }
+  } catch (e) {
+    res.status(400).json({
+      errorMessage: "Something went wrong!",
+      status: false,
+    });
+  }
+});
 /* Api to update room */
 app.post("/update-room", upload.any(), (req, res) => {
   try {
@@ -335,7 +510,7 @@ function token2(room_id, user_id, role) {
 app.post("/token", (req, res) => {
   try {
     // console.log(req.body.room_id, req.headers, req.body.role)
-    console.log(req.body.room_id, req.headers, req.body.role);
+    // console.log(req.body.room_id, req.headers, req.body.role);
     if (req.body && req.body.room_id && req.body.role) {
       const to = token2(req.body.room_id, req.user.id, req.body.role);
       if (to) {
@@ -364,7 +539,7 @@ app.post("/token", (req, res) => {
         "V3s1siiqQZfBoBuVHgb_OUUkkl6cFzfsRxK-GsmkXwZepVLZiyna8ZSRAIBZuvO6TqppYx9bBZseApyWAFCKRounMCvAqdGAX9-xA3vsUusWr4xGkHqEWaLjL4xRcgE5TDDZ-jkNISuWlAoKDc-utBUg-ya2b_zgywuUeIudF1Q";
       console.log(secret, payload, "1");
 
-      console.log(secret, "1");
+      console.log(secret, uuid4());
       jwt.sign(
         payload,
         secret,
@@ -433,58 +608,58 @@ app.post("/add-joinee", (req, res) => {
   }
 });
 
-var jwt = require("jsonwebtoken");
-var uuid4 = require("uuid4");
+// var jwt = require("jsonwebtoken");
+// var uuid4 = require("uuid4");
 
-app.post("/token", (req, res) => {
-  try {
-    console.log(req.body.room_id, req.headers, req.body.role);
-    if (req.body && req.body.room_id && req.body.role) {
-      var payload = {
-        access_key: "62bb69b476f8697390a6a7da",
-        room_id: req.body.room_id,
-        user_id: req.user.id,
-        role: req.body.role,
-        type: "app",
-        version: 2,
-        iat: Math.floor(Date.now() / 1000),
-        nbf: Math.floor(Date.now() / 1000),
-      };
-      var secret =
-        "V3s1siiqQZfBoBuVHgb_OUUkkl6cFzfsRxK-GsmkXwZepVLZiyna8ZSRAIBZuvO6TqppYx9bBZseApyWAFCKRounMCvAqdGAX9-xA3vsUusWr4xGkHqEWaLjL4xRcgE5TDDZ-jkNISuWlAoKDc-utBUg-ya2b_zgywuUeIudF1Q";
-      console.log(secret, payload, "1");
+// app.post("/token", (req, res) => {
+//   try {
+//     console.log(req.body.room_id, req.headers, req.body.role);
+//     if (req.body && req.body.room_id && req.body.role) {
+//       var payload = {
+//         access_key: "62bb69b476f8697390a6a7da",
+//         room_id: req.body.room_id,
+//         user_id: req.user.id,
+//         role: req.body.role,
+//         type: "app",
+//         version: 2,
+//         iat: Math.floor(Date.now() / 1000),
+//         nbf: Math.floor(Date.now() / 1000),
+//       };
+//       var secret =
+//         "V3s1siiqQZfBoBuVHgb_OUUkkl6cFzfsRxK-GsmkXwZepVLZiyna8ZSRAIBZuvO6TqppYx9bBZseApyWAFCKRounMCvAqdGAX9-xA3vsUusWr4xGkHqEWaLjL4xRcgE5TDDZ-jkNISuWlAoKDc-utBUg-ya2b_zgywuUeIudF1Q";
+//       console.log(secret, payload, "1");
 
-      console.log(secret, "1");
-      jwt.sign(
-        payload,
-        secret,
-        {
-          algorithm: "HS256",
-          expiresIn: "24h",
-          jwtid: uuid4(),
-        },
-        function (err, token) {
-          if (token) {
-            res.status(200).json({
-              status: true,
-              title: token,
-            });
-          } else {
-            res.status(400).json({
-              errorMessage: "No tokens!",
-              status: false,
-            });
-          }
-        }
-      );
-    }
-  } catch (e) {
-    res.status(400).json({
-      errorMessage: "Something went wrong!",
-      status: false,
-    });
-  }
-});
+//       console.log(secret, "1");
+//       jwt.sign(
+//         payload,
+//         secret,
+//         {
+//           algorithm: "HS256",
+//           expiresIn: "24h",
+//           jwtid: uuid4(),
+//         },
+//         function (err, token) {
+//           if (token) {
+//             res.status(200).json({
+//               status: true,
+//               title: token,
+//             });
+//           } else {
+//             res.status(400).json({
+//               errorMessage: "No tokens!",
+//               status: false,
+//             });
+//           }
+//         }
+//       );
+//     }
+//   } catch (e) {
+//     res.status(400).json({
+//       errorMessage: "Something went wrong!",
+//       status: false,
+//     });
+//   }
+// });
 
 /* Api to delete room */
 app.post("/delete-room", (req, res) => {
