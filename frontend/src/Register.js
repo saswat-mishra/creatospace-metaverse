@@ -2,7 +2,8 @@ import React, { Component, useState } from 'react';
 // import swal from 'sweetalert2';
 import { Button, TextField, Link, Grid } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-
+import { GoogleLogin } from 'react-google-login';
+const axios = require('axios');
 
 function Register() {
   // constructor(props) {
@@ -21,8 +22,6 @@ function Register() {
   const history = useNavigate();
 
   // const onChange = (e) => this.setState({ [e.target.name]: e.target.value });
-  const axios = require('axios');
-
   const register = () => {
     console.log(email, password);
 
@@ -35,7 +34,7 @@ function Register() {
         icon: "success",
         type: "success"
       });
-      history.push('/');
+      history('/');
     }).catch((err) => {
       console.log(err);
       new swal({
@@ -47,7 +46,31 @@ function Register() {
       });
     });
   }
-
+const onSuccess= (res)=>{
+  axios.post('http://localhost:2000/register', {
+      email: res.profileObj.email,
+      password: "$10$1gaworEfgNoApDgHHWl2Kle4",
+    }).then((res) => {
+      new swal({
+        text: res.data.title,
+        icon: "success",
+        type: "success"
+      });
+      history('/');
+    }).catch((err) => {
+      console.log(err);
+      new swal({
+        // text: err.response.data.errorMessage,
+        text: err.message,
+        // text: err,
+        icon: "error",
+        type: "error"
+      });
+    });
+}
+const onFailure = (res) => {
+  console.log("Login Failed. res: ", res);
+}
   return (
     <div style={{ marginTop: '200px' }}>
       <Grid>
@@ -107,6 +130,17 @@ function Register() {
               Login
             </Link>
           </div>
+          <div id="signInButton">
+        <GoogleLogin 
+         client_id = {process.env.REACT_APP_CLIENT_ID}
+         client_secret= {process.env.REACT_APP_CLIENT_SECRET}
+         buttonText= "Register with Google"
+         onSuccess= {onSuccess}
+         onFailure= {onFailure}
+         cookiePolicy= {'single_host_origin'}
+         isSignedIn= {true}
+         />
+      </div>
         </Grid>
       </Grid>
 

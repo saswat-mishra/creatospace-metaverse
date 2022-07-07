@@ -3,22 +3,11 @@ import swal from 'sweetalert2'
 import { Button, TextField, Link } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { GoogleLogin } from 'react-google-login';
-
-const client_id = "215504042537-v5rsk5ss23ktuo28ipe0uq9lm6s01t1i.apps.googleusercontent.com";
-
+const axios = require('axios');
 function Login() {
-  // constructor(props) {
-  //   super(props);
-  //   this.state = {
-  //     email: '',
-  //     password: ''
-  //   };
-  // }
-  // let navigate = useNavigate();
+
   const [email, setemail] = useState('')
   const [password, setPassword] = useState('')
-
-  const axios = require('axios');
   // const bcrypt = require('bcryptjs');
   // var salt = bcrypt.genSaltSync(10);
 
@@ -40,7 +29,7 @@ function Login() {
       localStorage.setItem('token', res.data.data.token);
       localStorage.setItem('user_id', res.data.data.uid);
       console.log(res);
-      history.push("/feed")
+      history("/feed")
       // console.log(history, 'test2')
     }).catch((err) => {
       if (err.response && err.response.data && err.response.data.errorMessage) {
@@ -53,8 +42,26 @@ function Login() {
     });
   }
   const onSuccess = (res) => {
-    console.log("Login Success. Current User: ", res.profileObj);
-    login();
+    console.log("Login Success. Current User: ", res.profileObj.name);
+    axios.post('http://localhost:2000/login', {
+      email: res.profileObj.email,
+      password: "$10$1gaworEfgNoApDgHHWl2Kle4",
+    }).then((res) => {
+
+      localStorage.setItem('token', res.data.data.token);
+      localStorage.setItem('user_id', res.data.data.uid);
+      console.log(res);
+      history("/feed")
+      // console.log(history, 'test2')
+    }).catch((err) => {
+      if (err.response && err.response.data && err.response.data.errorMessage) {
+        new swal({
+          text: err.response.data.errorMessage,
+          icon: "error",
+          type: "error"
+        });
+      }
+    });
   }
   const onFailure = (res) => {
     console.log("Login Failed. res: ", res);
@@ -109,7 +116,8 @@ function Login() {
       </div>
       <div id="signInButton">
         <GoogleLogin 
-         client_id = {client_id}
+         client_id = {process.env.REACT_APP_CLIENT_ID}
+         client_secret= {process.env.REACT_APP_CLIENT_SECRET}
          buttonText= "Login with Google"
          onSuccess= {onSuccess}
          onFailure= {onFailure}
