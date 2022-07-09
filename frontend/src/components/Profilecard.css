@@ -26,7 +26,7 @@
   }
   
   .card-container {
-    width: 50%;
+    /* width: 50%; */
     /* margin-left: 25%; */
     background-color: #231E39;
     border-radius: 5px;
@@ -35,7 +35,7 @@
     padding-top: 30px;
     position: relative;
     /* width: 750px; */
-    max-width: 100%;
+    /* max-width: 100%; */
     text-align: center;
     margin-top: 10px;
     padding-bottom: 30px;

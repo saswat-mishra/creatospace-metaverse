@@ -198,12 +198,13 @@ var axios = require("axios");
 var app_access_key = "62bb69b476f8697390a6a7da";
 var app_secret =
   "V3s1siiqQZfBoBuVHgb_OUUkkl6cFzfsRxK-GsmkXwZepVLZiyna8ZSRAIBZuvO6TqppYx9bBZseApyWAFCKRounMCvAqdGAX9-xA3vsUusWr4xGkHqEWaLjL4xRcgE5TDDZ-jkNISuWlAoKDc-utBUg-ya2b_zgywuUeIudF1Q=";
+
 const token = jwt.sign(
   {
     access_key: app_access_key,
     type: "management",
     version: 2,
-    iat: Math.floor(Date.now() / 1000),
+    iat: Math.floor(Date.now() / 1000) - 20,
     nbf: Math.floor(Date.now() / 1000),
   },
   app_secret,
@@ -213,7 +214,205 @@ const token = jwt.sign(
     jwtid: uuid4(),
   }
 );
-console.log(token);
+
+const template = () => {
+  let temp;
+  axios
+    .post(
+      "https://prod-policy.100ms.live/policy/v1/templates",
+      JSON.stringify({
+        name: "template",
+        default: true,
+        roles: {
+          speaker: {
+            name: "speaker",
+            publishParams: {
+              allowed: ["video", "screen", "audio"],
+              audio: {
+                bitRate: 32,
+                codec: "opus",
+              },
+              video: {
+                bitRate: 250,
+                codec: "vp8",
+                frameRate: 30,
+                width: 480,
+                height: 270,
+              },
+              screen: {
+                codec: "vp8",
+                frameRate: 10,
+                width: 1920,
+                height: 1080,
+              },
+            },
+          },
+        },
+      }),
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    )
+    .then((r) => {
+      temp = r.data.name;
+      console.log(temp);
+      // if (temp) {
+        return temp;
+      // }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+// const createroom = () => {
+  // const data =
+  // axios
+  //   .post(
+  //     "https://prod-in2.100ms.live/api/v2/rooms",
+  //     JSON.stringify({
+  //       name: "test-room",
+  //       description: "This is a test room",
+  //       recording_info: {
+  //         enabled: true,
+  //         upload_info: {
+  //           type: "s3",
+  //           location: "test-bucket",
+  //           prefix: "test-prefix",
+  //           options: { region: "ap-south-1" },
+  //           credentials: {
+  //             key: "aws-access-key",
+  //             secret: "aws-secret-key",
+  //           },
+  //         },
+  //       },
+  //     }),
+  //     {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //         "Content-Type": "application/json",
+  //       },
+  //     }
+  //   )
+  //   .then((res) => {
+  //     console.log(res);
+  //     return res.data.id;
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //   });
+// };
+
+app.post("/add-room", (req, res) => {
+  try {
+    if (req.body && req.body.name && req.body.desc && req.body.price && template()) {
+      console.log(template(), 'from function');
+      axios
+        .post(
+          "https://prod-in2.100ms.live/api/v2/rooms",
+          JSON.stringify({
+            name: "workshop-room",
+            description: "This is a test room",
+            recording_info: {
+              enabled: true,
+              upload_info: {
+                type: "s3",
+                location: "creatospace-hms",
+                prefix: "hms",
+                template: template(),
+                options: { region: "ap-south-1" },
+                credentials: {
+                  key: "AKIAXCHBHBOR3ZYHJ5FJ",
+                  secret: "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",
+                },
+              },
+            },
+          }),
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then((resp) => {
+          let new_room = new room();
+          new_room.name = req.body.name;
+          new_room.desc = req.body.desc;
+          new_room.price = req.body.price;
+          new_room.hms_id = resp.data.id;
+          new_room.user_id = req.user.id;
+          console.log(resp);
+          new_room.save((err, data) => {
+            if (err) {
+              res.status(400).json({
+                errorMessage: err,
+                status: false,
+              });
+            } else {
+              res.status(200).json({
+                data: data,
+                title: "room Added successfully.",
+              });
+            }
+          });
+          return res.data.id;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      // axios
+      //   .post(
+      //     "https://prod-in2.100ms.live/api/v2/rooms",
+      //     JSON.stringify({
+      //       name: "test-room",
+      //       description: "This is a test room",
+      //       recording_info: {
+      //         enabled: true,
+      //         upload_info: {
+      //           type: "s3",
+      //           location: "test-bucket",
+      //           prefix: "test-prefix",
+      //           options: { region: "ap-south-1" },
+      //           credentials: {
+      //             key: "aws-access-key",
+      //             secret: "aws-secret-key",
+      //           },
+      //         },
+      //       },
+      //     }),
+      //     {
+      //       headers: {
+      //         Authorization: `Bearer ${token}`,
+      //         "Content-Type": "application/json",
+      //       },
+      //     }
+      //   )
+      //   .then((res) => {
+      //     new_room.hms_id = res.data.id;
+      //     new_room.save();
+      //   })
+      //   .catch((err) => {
+      //     console.log(err);
+      //   });
+      // const hms = createroom();
+      // console.log(hms);
+    } else {
+      res.status(400).json({
+        errorMessage: "Add proper parameter first!",
+        status: false,
+      });
+    }
+  } catch (e) {
+    res.status(400).json({
+      errorMessage: "Something went wrong!",
+      status: false,
+    });
+  }
+});
 
 /* Api to update room */
 app.post("/update-room", upload.any(), (req, res) => {
@@ -315,7 +514,7 @@ function token2(room_id, user_id, role) {
     type: "app",
     version: 2,
     iss: "http://localhost:3000",
-    iat: Math.floor(Date.now() / 1000),
+    iat: Math.floor(Date.now() / 1000)-20,
     nbf: Math.floor(Date.now() / 1000),
   };
   var secret =
@@ -357,7 +556,7 @@ app.post("/token", (req, res) => {
         role: req.body.role,
         type: "app",
         version: 2,
-        iat: Math.floor(Date.now() / 1000),
+        iat: Math.floor(Date.now() / 1000)-20,
         nbf: Math.floor(Date.now() / 1000),
       };
       var secret =
@@ -579,7 +778,7 @@ app.post("/delete-room", (req, res) => {
 
 app.post("/get-room", (req, res) => {
   try {
-    console.log(req.body);
+    // console.log(req.body);
     if (req.body.id) {
       room.findById(req.body.id, (err, new_room) => {
         res.status(200).json({

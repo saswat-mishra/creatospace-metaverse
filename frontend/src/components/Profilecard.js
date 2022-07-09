@@ -1,23 +1,27 @@
 import React from 'react';
+import JoinForm from '../JoinForm';
 import './Profilecard.css'
 
 function Profilecard(props) {
     // console.log(props);
     const name  = props.name;
     const desc = props.desc;
-    const price = props.price
+    const price = props.price;
+    const room_id = props._id;
 
     return (
-        <div class='card'>
-            <div class="card-container">
-                <span class="pro">{price}</span>
-                <img class="round" src="https://randomuser.me/api/portraits/women/79.jpg" alt="user" />
-                <h3 class='name'>{name}</h3>
+        <div className='card'>
+            <div className="card-container">
+                <span className="pro">{price}</span>
+                <img className="round" src="https://randomuser.me/api/portraits/women/79.jpg" alt="user" />
+                <h3 className='name'>{name}</h3>
                 <h1>{desc}</h1>
-                <div class="buttons">
-                    <button class="primary">
+                <div className="buttons">
+                    <button className="primary">
                         Join the room
                     </button>
+                    {/* <JoinForm id={room_id}></JoinForm> */}
+
                     {/* <button class="primary ghost">
                         Following
                     </button> */}
