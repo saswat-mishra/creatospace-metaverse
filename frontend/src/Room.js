@@ -19,6 +19,7 @@ import {
   selectPeers,
   selectIsConnectedToRoom,
   selectRoomState,
+  selectLocalPeer,
 } from "@100mslive/react-sdk";
 import { hmsStore } from "./hms";
 import JoinForm from "./JoinForm";
@@ -34,15 +35,16 @@ function Room() {
   var peers = useHMSStore(selectPeers);
   const roomState = useHMSStore(selectRoomState);
 
-  console.log(isConnected, roomState, peers);
+  console.log(isConnected, roomState, peers, peer);
+  console.log("This is the local peer:", peer);
 
   async function onAudio() {
-    console.log('audio started enabling!', isConnected, audioEnabled, peers);
+    console.log("audio started enabling!", isConnected, audioEnabled, peers);
     await hmsActions.setLocalAudioEnabled(true);
-    if (audioEnabled) {
-      console.log('audio is now enabled!', isConnected, audioEnabled, peers);
-    }
-    console.log(audioTrack());
+  }
+
+  if (audioEnabled) {
+    console.log("audio is now enabled!", isConnected, audioEnabled, peers);
   }
 
   // async function toggleVideo() {
@@ -51,11 +53,11 @@ function Room() {
 
   async function enableScreenShare() {
     try {
-      console.log(isConnected, peers, screenshareOn);
+      console.log(isConnected, peers, peer, screenshareOn);
       // if (hmsActions) {
       await hmsActions.setScreenShareEnabled(true, true);
       // }
-      console.log("sharing!");
+      console.log("screen sharing!", screenshareOn);
     } catch (error) {
       console.log(error);
     }
@@ -76,21 +78,23 @@ function Room() {
   // to get the screenshare video track, this can be used to call attachVideo for rendering
   const screenshareVideoTrack = () => {
     if (presenter) {
-      hmsStore.getState(selectScreenShareByPeerID(presenter.id));
+      hmsStore.getState(selectScreenShareByPeerID(peer.id));
     }
   };
 
   // Get the peer who is sharing audio only screenshare
-  const peer = useHMSStore(selectPeerSharingAudio);
+  const peer = useHMSStore(selectLocalPeer);
   // Get the audio track of audio Only screenshare
 
-  const audioTrack = () => {
-    if (peer) useHMSStore(selectScreenShareAudioByPeerID(peer.id));
-    console.log(peer);
-  };
+  // const audioTrack = () => {
+  //   if (peer) useHMSStore(selectScreenShareAudioByPeerID(peer.id));
+  //   console.log(peer);
+  // };
   const screenTrack = () => {
-    if (peer) useHMSStore(selectScreenShareByPeerID(peer.id));
+    useHMSStore(selectScreenShareByPeerID(peer.id));
   };
+  
+  console.log(screenTrack());
 
   const leave = () => {
     hmsActions.leave();
@@ -111,10 +115,14 @@ function Room() {
           <p>not connected, please join.</p>
         )}
       </div> */}
-      {peers.map((p) => (
-        <User key={p.id} peer={p} />
-      ))}
       <div>
+        {peers.map((p) => (
+          <User key={p.id} peer={p} />
+        ))}
+      </div>
+
+      <div>
+        {/* <video src={peer.auxiliaryTracks? peer.auxiliaryTracks[0]: null}></video> */}
         <Fab onClick={onAudio} color="primary" aria-label="speak">
           <MicIcon />
         </Fab>
@@ -127,9 +135,9 @@ function Room() {
         {/* <video controls muted>
         <source src={screenTrack} type="video/mp4"></source>
       </video> */}
-        <Card>
+        {/* <Card>
           <CardMedia component="video" media={screenTrack}></CardMedia>
-        </Card>
+        </Card> */}
       </div>
 
       {/* <button onClick={showPeers} className="btn-primary">
