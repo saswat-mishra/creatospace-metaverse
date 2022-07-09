@@ -214,7 +214,6 @@ const token = jwt.sign(
     jwtid: uuid4(),
   }
 );
-// console.log(token, jwt.);
 
 const template = () => {
   let temp;
@@ -414,6 +413,7 @@ app.post("/add-room", (req, res) => {
     });
   }
 });
+
 /* Api to update room */
 app.post("/update-room", upload.any(), (req, res) => {
   try {
@@ -534,7 +534,7 @@ function token2(room_id, user_id, role) {
 app.post("/token", (req, res) => {
   try {
     // console.log(req.body.room_id, req.headers, req.body.role)
-    // console.log(req.body.room_id, req.headers, req.body.role);
+    console.log(req.body.room_id, req.headers, req.body.role);
     if (req.body && req.body.room_id && req.body.role) {
       const to = token2(req.body.room_id, req.user.id, req.body.role);
       if (to) {
@@ -563,7 +563,7 @@ app.post("/token", (req, res) => {
         "V3s1siiqQZfBoBuVHgb_OUUkkl6cFzfsRxK-GsmkXwZepVLZiyna8ZSRAIBZuvO6TqppYx9bBZseApyWAFCKRounMCvAqdGAX9-xA3vsUusWr4xGkHqEWaLjL4xRcgE5TDDZ-jkNISuWlAoKDc-utBUg-ya2b_zgywuUeIudF1Q";
       console.log(secret, payload, "1");
 
-      console.log(secret, uuid4());
+      console.log(secret, "1");
       jwt.sign(
         payload,
         secret,
@@ -632,58 +632,58 @@ app.post("/add-joinee", (req, res) => {
   }
 });
 
-// var jwt = require("jsonwebtoken");
-// var uuid4 = require("uuid4");
+var jwt = require("jsonwebtoken");
+var uuid4 = require("uuid4");
 
-// app.post("/token", (req, res) => {
-//   try {
-//     console.log(req.body.room_id, req.headers, req.body.role);
-//     if (req.body && req.body.room_id && req.body.role) {
-//       var payload = {
-//         access_key: "62bb69b476f8697390a6a7da",
-//         room_id: req.body.room_id,
-//         user_id: req.user.id,
-//         role: req.body.role,
-//         type: "app",
-//         version: 2,
-//         iat: Math.floor(Date.now() / 1000),
-//         nbf: Math.floor(Date.now() / 1000),
-//       };
-//       var secret =
-//         "V3s1siiqQZfBoBuVHgb_OUUkkl6cFzfsRxK-GsmkXwZepVLZiyna8ZSRAIBZuvO6TqppYx9bBZseApyWAFCKRounMCvAqdGAX9-xA3vsUusWr4xGkHqEWaLjL4xRcgE5TDDZ-jkNISuWlAoKDc-utBUg-ya2b_zgywuUeIudF1Q";
-//       console.log(secret, payload, "1");
+app.post("/token", (req, res) => {
+  try {
+    console.log(req.body.room_id, req.headers, req.body.role);
+    if (req.body && req.body.room_id && req.body.role) {
+      var payload = {
+        access_key: "62bb69b476f8697390a6a7da",
+        room_id: req.body.room_id,
+        user_id: req.user.id,
+        role: req.body.role,
+        type: "app",
+        version: 2,
+        iat: Math.floor(Date.now() / 1000),
+        nbf: Math.floor(Date.now() / 1000),
+      };
+      var secret =
+        "V3s1siiqQZfBoBuVHgb_OUUkkl6cFzfsRxK-GsmkXwZepVLZiyna8ZSRAIBZuvO6TqppYx9bBZseApyWAFCKRounMCvAqdGAX9-xA3vsUusWr4xGkHqEWaLjL4xRcgE5TDDZ-jkNISuWlAoKDc-utBUg-ya2b_zgywuUeIudF1Q";
+      console.log(secret, payload, "1");
 
-//       console.log(secret, "1");
-//       jwt.sign(
-//         payload,
-//         secret,
-//         {
-//           algorithm: "HS256",
-//           expiresIn: "24h",
-//           jwtid: uuid4(),
-//         },
-//         function (err, token) {
-//           if (token) {
-//             res.status(200).json({
-//               status: true,
-//               title: token,
-//             });
-//           } else {
-//             res.status(400).json({
-//               errorMessage: "No tokens!",
-//               status: false,
-//             });
-//           }
-//         }
-//       );
-//     }
-//   } catch (e) {
-//     res.status(400).json({
-//       errorMessage: "Something went wrong!",
-//       status: false,
-//     });
-//   }
-// });
+      console.log(secret, "1");
+      jwt.sign(
+        payload,
+        secret,
+        {
+          algorithm: "HS256",
+          expiresIn: "24h",
+          jwtid: uuid4(),
+        },
+        function (err, token) {
+          if (token) {
+            res.status(200).json({
+              status: true,
+              title: token,
+            });
+          } else {
+            res.status(400).json({
+              errorMessage: "No tokens!",
+              status: false,
+            });
+          }
+        }
+      );
+    }
+  } catch (e) {
+    res.status(400).json({
+      errorMessage: "Something went wrong!",
+      status: false,
+    });
+  }
+});
 
 /* Api to delete room */
 app.post("/delete-room", (req, res) => {

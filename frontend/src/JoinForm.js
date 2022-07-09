@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
+
 import {
   selectIsConnectedToRoom,
   selectPeers,
@@ -14,8 +15,9 @@ import { useNavigate } from "react-router-dom";
 const axios = require("axios");
 
 function JoinForm(props) {
-  // const hmsActions = useHMSActions();
+  const hmsActions = useHMSActions();
   // const token = localStorage.getItem('token');
+
   const hmsActions = useHMSActions();
   // const hmsStore = useHMSStore();
   let room_id = '';
@@ -38,6 +40,7 @@ function JoinForm(props) {
   // }
   // const body = JSON.stringify({ room_id: room_id, role: role })
   // const hmstoken = '';
+
 
     let nav = useNavigate();
     useEffect(() => {
@@ -82,11 +85,8 @@ function JoinForm(props) {
         //   icon: "error",
         //   type: "error"
         // });
-        // swal({
-        //   text: err.response.data.errorMessage,
-        //   icon: "error",
-        //   type: "error"
-        // });
+
+
       });
   };
   
@@ -117,13 +117,14 @@ function JoinForm(props) {
           placeholder="Auth token"
         />
       </div> */}
+
       <button onClick={joinRoom} className="btn-primary">
         Join room
       </button>
       {/* <button onClick={renderRoom(room_id)}>Render room</button> */}
       
     </div>
-  );
+  )
 }
 
 export default JoinForm;

@@ -15,6 +15,12 @@ const userSchema = new Schema( {
 	bio: {
 		type: String
 	},
+	userType:{
+		type: String
+	},
+	AuthType:{
+		type: String
+	},
 	roomsOwned: {type: [Schema.ObjectId], default: []},
 	roomsJoined: {type: [Schema.ObjectId], default: []}
 },{
