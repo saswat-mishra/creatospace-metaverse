@@ -15,8 +15,7 @@ import { useNavigate } from "react-router-dom";
 const axios = require("axios");
 
 function JoinForm(props) {
-  const hmsActions = useHMSActions();
-  // const token = localStorage.getItem('token');
+
 
   const hmsActions = useHMSActions();
   // const hmsStore = useHMSStore();
