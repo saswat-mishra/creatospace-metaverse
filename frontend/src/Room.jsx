@@ -20,10 +20,13 @@ import {
   selectIsConnectedToRoom,
   selectRoomState,
   selectLocalPeer,
+  useScreenShare,
+  selectIsAllowedToPublish,
 } from "@100mslive/react-sdk";
 import { hmsStore } from "./hms";
 import JoinForm from "./JoinForm";
 import User from "./components/User";
+import { useRef } from "react";
 
 function Room() {
   const params = useParams();
@@ -35,23 +38,23 @@ function Room() {
   const hmsActions = useHMSActions();
   var peers = useHMSStore(selectPeers);
   // Get the peer who is sharing audio only screenshare
-  const [localPeer, setLocalPeer] = useState(useHMSStore(selectLocalPeer));
+  const localPeer = useHMSStore(selectLocalPeer);
 
   const roomState = useHMSStore(selectRoomState);
 
   // to know if someone is screensharing
-  const screenshareOn = hmsStore.getState(selectIsLocalScreenShared);
+  const screenshareOn = useHMSStore(selectIsLocalScreenShared);
 
   // to get the HMSPeer object of the peer screensharing, will select  first if multiple screenshares
-  const presenter = hmsStore.getState(selectPeerScreenSharing);
+  const presenter = useHMSStore(selectPeerScreenSharing);
 
   // to get the HMSPeer object of all the peers screensharing
   const presenters = hmsStore.getState(selectPeersScreenSharing);
 
   // a boolean to know if the local peer is the one who is screensharing
-  const amIScreenSharing = hmsStore.getState(selectIsLocalScreenShared);
+  // const amIScreenSharing = hmsStore.getState(selectIsLocalScreenShared);
 
-  console.log(isConnected, roomState, peers, localPeer, screenEnabled);
+  console.log(isConnected, roomState, peers, screenEnabled);
   console.log("This is the local peer:", localPeer);
 
   async function onAudio() {
@@ -66,14 +69,41 @@ function Room() {
   // async function toggleVideo() {
   //   await hmsActions.setLocalVideoEnabled(!videoEnabled);
   // }
+  const {
+    amIScreenSharing,
+    screenShareVideoTrackId: video,
+    screenShareAudioTrackId: audio,
+    toggleScreenShare,
+  } = useScreenShare();
+  const isAllowedToPublish = useHMSStore(selectIsAllowedToPublish);
+
+  const [localPeerid, setlocalPeerid] = useState("");
+  useEffect(() => {
+    if (localPeer) {
+      setlocalPeerid(localPeer.id);
+    }
+  });
+
+  const videoRef = useRef(null);
+  const track = useHMSStore(selectScreenShareByPeerID(localPeerid));
+  useEffect(() => {
+    (async () => {
+      if (videoRef && videoRef.current && track) {
+        if (track.enabled) {
+          await hmsActions.attachVideo(track.id, videoRef.current);
+        } else {
+          await hmsActions.detachVideo(track.id, videoRef.current);
+        }
+      }
+    })();
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+  });
+
+  console.log(amIScreenSharing, isAllowedToPublish);
 
   async function enableScreenShare() {
-      console.log("started screensharing!", isConnected, presenter, localPeer, screenshareOn);
-      // if (hmsActions) {
-      await hmsActions.setScreenShareEnabled(true, {videoOnly: true});
-      // }
-      console.log("screen sharing!", screenshareOn);
-    
+    await hmsActions.setScreenShareEnabled(true, { videoOnly: true });
+    console.log("screen sharing!", amIScreenSharing, isAllowedToPublish);
   }
 
   // to get the screenshare video track, this can be used to call attachVideo for rendering
@@ -94,12 +124,7 @@ function Room() {
 
   // const screenTrack = useHMSStore(selectScreenShareByPeerID(localPeer.id));
 
-  var locpeer = useHMSStore(selectLocalPeer);
-  useEffect(() => {
-    setLocalPeer(locpeer);
-  });
-
-  console.log(localPeer, presenter, screenshareVideoTrack());
+  // console.log(localPeer, presenter, screenshareVideoTrack());
 
   const leave = () => {
     hmsActions.leave();
@@ -136,15 +161,17 @@ function Room() {
         {/* <Fab onClick={toggleAudio} color="primary" aria-label="speak">
         <MicOffIcon />
       </Fab> */}
-        <Fab onClick={enableScreenShare} color="primary" aria-label="speak">
+        <Fab
+          onClick={async () => {
+            await hmsActions.setScreenShareEnabled(true, { videoOnly: true });
+            console.log(track);
+          }}
+          color="primary"
+          aria-label="speak"
+        >
           <ScreenShareIcon />
         </Fab>
-        {/* <video controls muted>
-        <source src={screenTrack} type="video/mp4"></source>
-      </video> */}
-        {/* <Card>
-          <CardMedia component="video" media={screenTrack}></CardMedia>
-        </Card> */}
+        <video ref={videoRef} autoPlay muted></video>
       </div>
 
       {/* <button onClick={showPeers} className="btn-primary">

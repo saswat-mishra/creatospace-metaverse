@@ -6,7 +6,7 @@ import { gapi } from 'gapi-script';
 import Feed from './Feed';
 import Login from './Login';
 import Register from './Register';
-import Room from './Room';
+import Room from './Room.jsx';
 import React from 'react';
 import './App.css';
 
