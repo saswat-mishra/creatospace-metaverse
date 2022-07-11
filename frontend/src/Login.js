@@ -3,6 +3,7 @@ import swal from 'sweetalert2'
 import { Button, TextField, Link } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { GoogleLogin } from 'react-google-login';
+import './Login.css';
 const axios = require('axios');
 function Login() {
 
@@ -68,7 +69,8 @@ function Login() {
   }
 
   return (
-    <div style={{ marginTop: '200px' }}>
+    <body>
+    <div id="form-box" style={{ marginTop: '200px' }}>
       <div>
         <h2>Login</h2>
       </div>
@@ -126,6 +128,7 @@ function Login() {
          />
       </div>
     </div>
+    </body>
   );
 }
 
