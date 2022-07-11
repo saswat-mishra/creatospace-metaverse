@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Card, CardMedia, Fab } from "@mui/material";
 import MicIcon from "@mui/icons-material/Mic";
-import MicOffIcon from "@mui/icons-material/MicOff";
+import { Flex, IconButton, Text, Video } from "@100mslive/react-ui";
 import ScreenShareIcon from "@mui/icons-material/ScreenShare";
 import {
   useHMSActions,
@@ -30,13 +30,29 @@ function Room() {
   const room_id = params.id;
   const audioEnabled = useHMSStore(selectIsLocalAudioEnabled);
   const videoEnabled = useHMSStore(selectIsLocalVideoEnabled);
+  const screenEnabled = useHMSStore(selectIsLocalScreenShared);
   const isConnected = useHMSStore(selectIsConnectedToRoom);
   const hmsActions = useHMSActions();
   var peers = useHMSStore(selectPeers);
+  // Get the peer who is sharing audio only screenshare
+  const [localPeer, setLocalPeer] = useState(useHMSStore(selectLocalPeer));
+
   const roomState = useHMSStore(selectRoomState);
 
-  console.log(isConnected, roomState, peers, peer);
-  console.log("This is the local peer:", peer);
+  // to know if someone is screensharing
+  const screenshareOn = hmsStore.getState(selectIsLocalScreenShared);
+
+  // to get the HMSPeer object of the peer screensharing, will select  first if multiple screenshares
+  const presenter = hmsStore.getState(selectPeerScreenSharing);
+
+  // to get the HMSPeer object of all the peers screensharing
+  const presenters = hmsStore.getState(selectPeersScreenSharing);
+
+  // a boolean to know if the local peer is the one who is screensharing
+  const amIScreenSharing = hmsStore.getState(selectIsLocalScreenShared);
+
+  console.log(isConnected, roomState, peers, localPeer, screenEnabled);
+  console.log("This is the local peer:", localPeer);
 
   async function onAudio() {
     console.log("audio started enabling!", isConnected, audioEnabled, peers);
@@ -52,49 +68,38 @@ function Room() {
   // }
 
   async function enableScreenShare() {
-    try {
-      console.log(isConnected, peers, peer, screenshareOn);
+      console.log("started screensharing!", isConnected, presenter, localPeer, screenshareOn);
       // if (hmsActions) {
-      await hmsActions.setScreenShareEnabled(true, true);
+      await hmsActions.setScreenShareEnabled(true, {videoOnly: true});
       // }
       console.log("screen sharing!", screenshareOn);
-    } catch (error) {
-      console.log(error);
-    }
+    
   }
-
-  // to know if someone is screensharing
-  const screenshareOn = hmsStore.getState(selectIsSomeoneScreenSharing);
-
-  // to get the HMSPeer object of the peer screensharing, will select  first if multiple screenshares
-  const presenter = hmsStore.getState(selectPeerScreenSharing);
-
-  // to get the HMSPeer object of all the peers screensharing
-  const presenters = hmsStore.getState(selectPeersScreenSharing);
-
-  // a boolean to know if the local peer is the one who is screensharing
-  const amIScreenSharing = hmsStore.getState(selectIsLocalScreenShared);
 
   // to get the screenshare video track, this can be used to call attachVideo for rendering
   const screenshareVideoTrack = () => {
     if (presenter) {
-      hmsStore.getState(selectScreenShareByPeerID(peer.id));
+      hmsStore.getState(selectScreenShareByPeerID(presenter.id));
     }
   };
 
   // Get the peer who is sharing audio only screenshare
-  const peer = useHMSStore(selectLocalPeer);
+  // const localPeer = useHMSStore(selectLocalPeer);
   // Get the audio track of audio Only screenshare
 
   // const audioTrack = () => {
   //   if (peer) useHMSStore(selectScreenShareAudioByPeerID(peer.id));
   //   console.log(peer);
   // };
-  const screenTrack = () => {
-    useHMSStore(selectScreenShareByPeerID(peer.id));
-  };
-  
-  console.log(screenTrack());
+
+  // const screenTrack = useHMSStore(selectScreenShareByPeerID(localPeer.id));
+
+  var locpeer = useHMSStore(selectLocalPeer);
+  useEffect(() => {
+    setLocalPeer(locpeer);
+  });
+
+  console.log(localPeer, presenter, screenshareVideoTrack());
 
   const leave = () => {
     hmsActions.leave();
@@ -122,7 +127,9 @@ function Room() {
       </div>
 
       <div>
-        {/* <video src={peer.auxiliaryTracks? peer.auxiliaryTracks[0]: null}></video> */}
+        {/* <video>
+          <source src={screenTrack}></source>
+        </video> */}
         <Fab onClick={onAudio} color="primary" aria-label="speak">
           <MicIcon />
         </Fab>
