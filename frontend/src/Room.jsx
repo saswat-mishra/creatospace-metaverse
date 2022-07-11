@@ -27,8 +27,8 @@ import { hmsStore } from "./hms";
 import JoinForm from "./JoinForm";
 import User from "./components/User";
 import { useRef } from "react";
-
 function Room() {
+
   const params = useParams();
   const room_id = params.id;
   const audioEnabled = useHMSStore(selectIsLocalAudioEnabled);
@@ -180,7 +180,7 @@ function Room() {
       <button onClick={leave} className="btn-primary">
         Leave room
       </button>
-    </div>
+  </div>
   );
 }
 
