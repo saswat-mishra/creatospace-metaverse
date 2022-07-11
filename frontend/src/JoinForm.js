@@ -1,23 +1,38 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
-import { useHMSActions, useHMSStore } from "@100mslive/react-sdk";
-import { selectIsConnectedToRoom } from '@100mslive/hms-video-store';
-const axios = require('axios');
 
+import {
+  selectIsConnectedToRoom,
+  selectPeers,
+  selectPermissions,
+  useHMSActions,
+  useHMSStore,
+} from "@100mslive/react-sdk";
+import { hmsStore } from "./hms";
+import getToken from "./utils/getToken";
+import { useNavigate } from "react-router-dom";
+// import selectIsRoomState from "@100mslive/react-sdk"
+const axios = require("axios");
 
 function JoinForm(props) {
   const hmsActions = useHMSActions();
   // const token = localStorage.getItem('token');
 
-  console.log(props);
-  const room_id = props.id
+  // const hmsActions = useHMSActions();
+  // const hmsStore = useHMSStore();
+  let room_id = '';
+    room_id = props.id;
+    const [hmsid, setHmsid] = useState('')
   // const room_id = '62bf33e976f8697390a6db7e'
-  const role = 'new-role-8544'
+  const [role, setRole] = useState("speaker");
   // console.log(localStorage.getItem('user_id'))
-  const token = localStorage.getItem('token')
-  const isConnected = useHMSStore(selectIsConnectedToRoom)
 
-
+  const token = localStorage.getItem("token");
+  const user_id = localStorage.getItem("user_id");
+  const isConnected = useHMSStore(selectIsConnectedToRoom);
+  // const y = selectPermissions(hmsStore.subscribe())
+  // console.log(y);
+  
   // const headers = {
   //   "Access-Control-Allow-Origin": "*",
   //   'Content-Type': 'application/json',
@@ -26,71 +41,55 @@ function JoinForm(props) {
   // const body = JSON.stringify({ room_id: room_id, role: role })
   // const hmstoken = '';
 
-  const getToken = () => {
+
+    let nav = useNavigate();
+    useEffect(() => {
+    axios
+      .post("http://localhost:2000/get-room", JSON.stringify({ id: room_id }), {
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json",
+          token: token,
+        },
+      })
+      .then((res) => {
+        setHmsid(res.data.data.hms_id);
+      })})
+
+  const joinRoom = () => {
     // const room =
-      console.log(room_id);
-    axios.post('http://localhost:2000/get-room', JSON.stringify({ id: room_id }),
-        {
-          headers: {
-            "Access-Control-Allow-Origin": "*",
-            'Content-Type': 'application/json',
-            'token': token
-          }
-        }
-      ).then((res) => {
-        console.log(res.data.data)
-        // return res.data.data;
-        axios.post('http://localhost:2000/token',
-          JSON.stringify({ room_id: res.data.data.hms_id, role: role }),
-          {
-            headers: {
-              "Access-Control-Allow-Origin": "*",
-              'Content-Type': 'application/json',
-              'token': token
-            }
-          }
-        ).then((res) => {
-          console.log(res)
-          hmsActions.join({
-            userName: 'saswat',
-            authToken: res.data.title,
-            rememberDeviceSelection: true,
-          })
-          console.log(isConnected);
-
-        }).catch((err) => {
-          if (err.response && err.response.data && err.response.data.errorMessage) {
-            // swal({
-            //   text: err.response.data.errorMessage,
-            //   icon: "error",
-            //   type: "error"
-            // });
-            console.log(err);
-          }
-        });
-
-      }).catch((err) => {
-        console.log(err);
+    console.log(role, hmsid);
+    
+        getToken(role, hmsid)
+          .then((token) => {
+            console.log(token);
+            hmsActions.join({
+              userName: user_id,
+              authToken: token,
+              settings: {
+                isAudioMuted: true,
+              },
+              initEndpoint:
+                process.env.REACT_APP_HMS_INIT_PEER_ENPOINT || undefined,
+            })
+            console.log(isConnected)
+            nav('../room/'+room_id);
+          // })
+          // .catch((error) => {
+          //   console.log("Token API Error", error);
+          // });
+      })
+      .catch((err) => {
         // swal({
         //   text: err.response.data.errorMessage,
         //   icon: "error",
         //   type: "error"
         // });
-        if (err.response && err.response.data && err.response.data.errorMessage) {
-          // swal({
-          //   text: err.response.data.errorMessage,
-          //   icon: "error",
-          //   type: "error"
-          // });
-          console.log(err);
-        }
-      })
 
 
-  }
-
-
-
+      });
+  };
+  
 
   return (
     // <form>
@@ -118,8 +117,12 @@ function JoinForm(props) {
           placeholder="Auth token"
         />
       </div> */}
-      <button onClick={getToken} className="btn-primary">Join</button>
-      <div>{isConnected ? 'connected' : 'not connected, please join.'}</div>
+
+      <button onClick={joinRoom} className="btn-primary">
+        Join room
+      </button>
+      {/* <button onClick={renderRoom(room_id)}>Render room</button> */}
+      
     </div>
   )
 }
