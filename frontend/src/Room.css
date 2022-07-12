@@ -1,0 +1,46 @@
+#mic-icon{
+    position: absolute;
+    right: 50%;
+    bottom:0%;
+}
+#mic-icon:hover{
+    box-shadow: 1px 1px 2px 1px rgb(0, 0, 0);
+}
+#src-icon{
+    position: absolute;
+    left: 52%;
+    bottom: 0%;
+}
+#src-icon:hover{
+    box-shadow: 1px 1px 2px 1px rgb(0, 0, 0);
+}
+#rightmenu{
+    opacity: 0;
+    height: 100%;
+    width: 10%;
+    right: 0%;
+    top: 0%;
+    background-color: aliceblue;
+    position: absolute;
+}
+#menu{
+    bottom: 2%;
+    right: 2%;
+    position: absolute;
+}
+.btn-primary{
+    position: absolute;
+    padding: 7px;
+    top: 2%;
+    left: 2%;
+    color: white;
+    border: 0;
+    box-shadow: 1px 1px 1px 1px rgb(97, 97, 97);
+    background-color: rgb(255, 96, 96);
+    border-radius: 3px;
+}
+.btn-primary:hover{
+   
+    /* box-shadow: 1px 1px 1px 1px rgb(99, 97, 97); */
+    background-color: rgb(197, 28, 28);
+}

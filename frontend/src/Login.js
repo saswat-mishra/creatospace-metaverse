@@ -69,7 +69,6 @@ function Login() {
   }
 
   return (
-    <body>
     <div id="form-box" style={{ marginTop: '200px' }}>
       <div>
         <h2>Login</h2>
@@ -128,7 +127,6 @@ function Login() {
          />
       </div>
     </div>
-    </body>
   );
 }
 

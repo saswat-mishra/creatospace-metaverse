@@ -3,7 +3,6 @@ import React, { Component, useState } from 'react';
 import { Button, TextField, Link, Grid } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { GoogleLogin } from 'react-google-login';
-import './Login.css';
 const axios = require('axios');
 
 function Register() {
@@ -73,7 +72,6 @@ const onFailure = (res) => {
   console.log("Login Failed. res: ", res);
 }
   return (
-    <body>
     <div id="form-box" style={{ marginTop: '200px' }}>
       <Grid>
         <Grid>
@@ -147,7 +145,6 @@ const onFailure = (res) => {
       </Grid>
 
     </div>
-    </body>
   );
 }
 

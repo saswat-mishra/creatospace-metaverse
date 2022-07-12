@@ -7,11 +7,15 @@ div {
     font-size: x-large;
     color: darkorange;
     text-align: center;
-    left: 23vw;
+    left: 30vw;
     top: 2vh;
     position: absolute;
 }
-
+#content{
+    position: absolute;
+    top: 15%;
+    left: 45%;
+}
 .heading h1 {
     font: Montserrat;
     vertical-align: middle;
