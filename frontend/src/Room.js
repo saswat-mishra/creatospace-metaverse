@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Card, CardMedia, Fab } from "@mui/material";
 import MicIcon from "@mui/icons-material/Mic";
@@ -26,9 +26,8 @@ import {
 import { hmsStore } from "./hms";
 import JoinForm from "./JoinForm";
 import User from "./components/User";
-import { useRef } from "react";
-function Room() {
 
+function Room() {
   const params = useParams();
   const room_id = params.id;
   const audioEnabled = useHMSStore(selectIsLocalAudioEnabled);
@@ -38,15 +37,15 @@ function Room() {
   const hmsActions = useHMSActions();
   var peers = useHMSStore(selectPeers);
   // Get the peer who is sharing audio only screenshare
-  const localPeer = useHMSStore(selectLocalPeer);
+  const [localPeer, setLocalPeer] = useState(useHMSStore(selectLocalPeer));
 
   const roomState = useHMSStore(selectRoomState);
 
   // to know if someone is screensharing
-  const screenshareOn = useHMSStore(selectIsLocalScreenShared);
+  const screenshareOn = hmsStore.getState(selectIsLocalScreenShared);
 
   // to get the HMSPeer object of the peer screensharing, will select  first if multiple screenshares
-  const presenter = useHMSStore(selectPeerScreenSharing);
+  const presenter = hmsStore.getState(selectPeerScreenSharing);
 
   // to get the HMSPeer object of all the peers screensharing
   const presenters = hmsStore.getState(selectPeersScreenSharing);
@@ -54,21 +53,9 @@ function Room() {
   // a boolean to know if the local peer is the one who is screensharing
   // const amIScreenSharing = hmsStore.getState(selectIsLocalScreenShared);
 
-  console.log(isConnected, roomState, peers, screenEnabled);
+  console.log(isConnected, roomState, peers, localPeer, screenEnabled);
   console.log("This is the local peer:", localPeer);
 
-  async function onAudio() {
-    console.log("audio started enabling!", isConnected, audioEnabled, peers);
-    await hmsActions.setLocalAudioEnabled(true);
-  }
-
-  if (audioEnabled) {
-    console.log("audio is now enabled!", isConnected, audioEnabled, peers);
-  }
-
-  // async function toggleVideo() {
-  //   await hmsActions.setLocalVideoEnabled(!videoEnabled);
-  // }
   const {
     amIScreenSharing,
     screenShareVideoTrackId: video,
@@ -100,10 +87,31 @@ function Room() {
   });
 
   console.log(amIScreenSharing, isAllowedToPublish);
+  async function onAudio() {
+    console.log("audio started enabling!", isConnected, audioEnabled, peers);
+    await hmsActions.setLocalAudioEnabled(true);
+  }
+
+  if (audioEnabled) {
+    console.log("audio is now enabled!", isConnected, audioEnabled, peers);
+  }
+
+  // async function toggleVideo() {
+  //   await hmsActions.setLocalVideoEnabled(!videoEnabled);
+  // }
 
   async function enableScreenShare() {
+    console.log(
+      "started screensharing!",
+      isConnected,
+      presenter,
+      localPeer,
+      screenshareOn
+    );
+    // if (hmsActions) {
     await hmsActions.setScreenShareEnabled(true, { videoOnly: true });
-    console.log("screen sharing!", amIScreenSharing, isAllowedToPublish);
+    // }
+    console.log("screen sharing!", screenshareOn);
   }
 
   // to get the screenshare video track, this can be used to call attachVideo for rendering
@@ -124,7 +132,12 @@ function Room() {
 
   // const screenTrack = useHMSStore(selectScreenShareByPeerID(localPeer.id));
 
-  // console.log(localPeer, presenter, screenshareVideoTrack());
+  var locpeer = useHMSStore(selectLocalPeer);
+  useEffect(() => {
+    setLocalPeer(locpeer);
+  });
+
+  console.log(localPeer, presenter, screenshareVideoTrack());
 
   const leave = () => {
     hmsActions.leave();
@@ -169,9 +182,11 @@ function Room() {
           color="primary"
           aria-label="speak"
         >
+          {" "}
           <ScreenShareIcon />
         </Fab>
         <video ref={videoRef} autoPlay muted></video>
+
       </div>
 
       {/* <button onClick={showPeers} className="btn-primary">
@@ -180,7 +195,7 @@ function Room() {
       <button onClick={leave} className="btn-primary">
         Leave room
       </button>
-  </div>
+    </div>
   );
 }
 
