@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Card, CardMedia, Fab } from "@mui/material";
 import MicIcon from "@mui/icons-material/Mic";
-import { Flex, IconButton, Text, Video } from "@100mslive/react-ui";
+// import { Flex, IconButton, Text, Video } from "@100mslive/react-ui";
 import ScreenShareIcon from "@mui/icons-material/ScreenShare";
 import {
   useHMSActions,
@@ -26,7 +26,7 @@ import {
 import { hmsStore } from "./hms";
 import JoinForm from "./JoinForm";
 import User from "./components/User";
-
+import './Room.css';
 function Room() {
   const params = useParams();
   const room_id = params.id;
@@ -67,7 +67,7 @@ function Room() {
   const [localPeerid, setlocalPeerid] = useState("");
   useEffect(() => {
     if (localPeer) {
-      setlocalPeerid(localPeer.id);
+      setlocalPeerid(localPeer?.id);
     }
   });
 
@@ -142,7 +142,9 @@ function Room() {
   const leave = () => {
     hmsActions.leave();
   };
-
+  // const menu= () =>{
+  //   document.getElementById('rightmenu').style.opacity= 100;
+  // }
   console.log(peers);
 
   // function showPeers() {
@@ -168,13 +170,13 @@ function Room() {
         {/* <video>
           <source src={screenTrack}></source>
         </video> */}
-        <Fab onClick={onAudio} color="primary" aria-label="speak">
+        <Fab onClick={onAudio} color="primary" aria-label="speak" id="mic-icon">
           <MicIcon />
         </Fab>
         {/* <Fab onClick={toggleAudio} color="primary" aria-label="speak">
         <MicOffIcon />
       </Fab> */}
-        <Fab
+        <Fab id="src-icon"
           onClick={async () => {
             await hmsActions.setScreenShareEnabled(true, { videoOnly: true });
             console.log(track);
@@ -195,6 +197,8 @@ function Room() {
       <button onClick={leave} className="btn-primary">
         Leave room
       </button>
+      {/* <button id="menu" onClick={menu}>Options</button>
+      <div id="rightmenu"></div> */}
     </div>
   );
 }

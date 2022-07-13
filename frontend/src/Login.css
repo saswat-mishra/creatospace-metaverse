@@ -1,7 +1,10 @@
 body {
   text-align: center;
-  font-family: 'Roboto', sans-serif;
+  /* font-family: 'Roboto', sans-serif; */
+  font: Montserrat;
+  background-color: rgb(45 40 84);
 }
+
 
 .button_style {
   margin-left: 10px !important;
@@ -13,5 +16,21 @@ body {
 }
 
 h2 {
-    color: #3f51b5;
+  font: Montserrat;
+    color: darkorange;
+}
+#form-box{
+  background-color: white;
+  padding-left: 45px;
+  padding-right: 45px;
+  padding-bottom: 30px;
+  width: fit-content;
+  left: 40%;
+  border-radius: 20px;
+  position: absolute;
+}
+#signInButton{
+  /* border: 1px solid black; */
+  margin-top: 10px;
+  /* position: absolute; */
 }

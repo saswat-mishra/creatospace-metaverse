@@ -1,8 +1,9 @@
 import React, { Component, useState } from 'react';
-import swal from 'sweetalert2'
+// import swal from 'sweetalert2'
 import { Button, TextField, Link } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { GoogleLogin } from 'react-google-login';
+// import { GoogleLogin } from 'react-google-login';
+import './Login.css';
 const axios = require('axios');
 function Login() {
 
@@ -33,11 +34,11 @@ function Login() {
       // console.log(history, 'test2')
     }).catch((err) => {
       if (err.response && err.response.data && err.response.data.errorMessage) {
-        new swal({
-          text: err.response.data.errorMessage,
-          icon: "error",
-          type: "error"
-        });
+        // new swal({
+        //   text: err.response.data.errorMessage,
+        //   icon: "error",
+        //   type: "error"
+        // });
       }
     });
   }
@@ -55,11 +56,11 @@ function Login() {
       // console.log(history, 'test2')
     }).catch((err) => {
       if (err.response && err.response.data && err.response.data.errorMessage) {
-        new swal({
-          text: err.response.data.errorMessage,
-          icon: "error",
-          type: "error"
-        });
+        // new swal({
+        //   text: err.response.data.errorMessage,
+        //   icon: "error",
+        //   type: "error"
+        // });
       }
     });
   }
@@ -68,7 +69,7 @@ function Login() {
   }
 
   return (
-    <div style={{ marginTop: '200px' }}>
+    <div id="form-box" style={{ marginTop: '200px' }}>
       <div>
         <h2>Login</h2>
       </div>
@@ -115,7 +116,7 @@ function Login() {
         </Link>
       </div>
       <div id="signInButton">
-        <GoogleLogin 
+        {/* <GoogleLogin 
          client_id = {process.env.REACT_APP_CLIENT_ID}
          client_secret= {process.env.REACT_APP_CLIENT_SECRET}
          buttonText= "Login with Google"
@@ -123,7 +124,7 @@ function Login() {
          onFailure= {onFailure}
          cookiePolicy= {'single_host_origin'}
          isSignedIn= {true}
-         />
+         /> */}
       </div>
     </div>
   );

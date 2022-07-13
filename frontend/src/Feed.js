@@ -45,24 +45,25 @@ function Feed() {
   });
 
   return (
-    <div>
+    <div id="bodydiv">
       <Grid container spacing={12}>
         <Grid item md={6}>
           <div className="heading">
             <h1>Join your favourite events here!</h1>
           </div>
+          <button id="create-room">Create Room</button>
         </Grid>
         {rooms ? (
-          <div>
+          <div id="content">
             {rooms.map((e, index) => (
-              <Grid key={index} item md={12}>
+              <Grid key={index} item md={12} >
                 <Profilecard
                   name={e.name}
                   desc={e.desc}
                   price={e.price}
                 ></Profilecard>
                 <p>{e._id}</p>
-                <JoinForm id={e._id}></JoinForm>
+                <JoinForm id={e._id} ></JoinForm>
               </Grid>
             ))}
           </div>
