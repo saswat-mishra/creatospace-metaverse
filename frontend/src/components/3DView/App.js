@@ -12,7 +12,7 @@ import AddStairs from "./Components/AddStairs";
 
 // import Seat from "./Assets/Seat";
 
-function App() {
+function ThreeDSpace() {
   const [users, setUsers] = useState([{}]);
   const map = useLoader(TextureLoader, dummtTex);
   const createLoc = () => {
@@ -38,7 +38,7 @@ function App() {
           style={{ width: "100%", height: "100vh" }}
           shadows={{ type: THREE.PCFSoftShadowMap }}
         >
-          <Stats />
+          {/* <Stats /> */}
           <OrbitControls />
           <directionalLight
             position={[0, 30, -60]}
@@ -81,4 +81,4 @@ function App() {
   );
 }
 
-export default App;
+export default ThreeDSpace;

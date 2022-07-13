@@ -19,7 +19,6 @@ const Stairs = ({ cubeGeometry, material, y, z, cover, height }) => {
     const box3 = new THREE.Box3().setFromObject(mesh);
     addObj([box3, mesh]);
   }, []);
-  console.log(CollisionObj);
 
   return (
     <>

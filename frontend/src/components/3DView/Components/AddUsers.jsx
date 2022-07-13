@@ -13,7 +13,7 @@ const socket = io.connect("https://localhost:3001/");
 
 const AddUsers = () => {
   const CollisionObj = useStore((state) => state.CollisionObj);
-  console.log(CollisionObj);
+
   const StaticJoe = useJoe(true, true);
   const static2 = useUtkarsh(true, true);
   const { scene, camera } = useThree();
@@ -28,7 +28,6 @@ const AddUsers = () => {
     new THREE.MeshBasicMaterial()
   );
   useEffect(() => {
-    console.log(uuid);
     socket.emit("add-user", uuid);
     scene.add(newmesh);
     scene.add(boxEnvelope);
@@ -92,20 +91,18 @@ const AddUsers = () => {
   });
 
   socket.on("disconnect-user", (d) => {
-    console.log(d);
     for (let i = 0; i < otherUsers.length; i++) {
       if (otherUsers[i][0].userData.uuid == d.uuid) {
-        console.log(otherUsers[i][0].userData.uuid);
         scene.remove(otherUsers[i][0]);
         otherUsers.splice(i, 1);
       }
     }
   });
-  console.log(newmesh);
+
   let keyPressed;
-  useEffect(() => {
+  if (!keyPressed) {
     keyPressed = KeyboardControls(actions);
-  }, [newmesh]);
+  }
 
   const clock = new THREE.Clock();
   useFrame(() => {
@@ -113,40 +110,39 @@ const AddUsers = () => {
     otherUsers.map((user) => {
       user[1].update(delta);
     });
-    if (keyPressed) {
-      if (keyPressed?.w) {
-        newmesh.translateZ(delta * 0.2);
-        boxEnvelope.position.copy(newmesh.position);
-        socket.emit("update-position", {
-          uuid,
-          newPos: newmesh.position,
-          newRot: newmesh.rotation,
-        });
-      }
 
-      if (keyPressed?.s) {
-        newmesh.translateZ(-0.01);
-      }
+    if (keyPressed?.w) {
+      newmesh.translateZ(delta * 3);
+      boxEnvelope.position.copy(newmesh.position);
+      socket.emit("update-position", {
+        uuid,
+        newPos: newmesh.position,
+        newRot: newmesh.rotation,
+      });
+    }
 
-      if (keyPressed?.a) {
-        newmesh.rotation.y += 0.02;
-        socket.emit("update-position", {
-          uuid,
-          newPos: newmesh.position,
-          newRot: newmesh.rotation,
-        });
-      }
-      if (keyPressed?.d) {
-        newmesh.rotation.y -= 0.02;
-        socket.emit("update-position", {
-          uuid,
-          newPos: newmesh.position,
-          newRot: newmesh.rotation,
-        });
-      }
-      if (!keyPressed?.w) {
-        socket.emit("stop-walk", uuid);
-      }
+    if (keyPressed?.s) {
+      newmesh.translateZ(-0.01);
+    }
+
+    if (keyPressed?.a) {
+      newmesh.rotation.y += 0.02;
+      socket.emit("update-position", {
+        uuid,
+        newPos: newmesh.position,
+        newRot: newmesh.rotation,
+      });
+    }
+    if (keyPressed?.d) {
+      newmesh.rotation.y -= 0.02;
+      socket.emit("update-position", {
+        uuid,
+        newPos: newmesh.position,
+        newRot: newmesh.rotation,
+      });
+    }
+    if (!keyPressed?.w) {
+      socket.emit("stop-walk", uuid);
     }
 
     UpdateCam(newmesh, camera);
