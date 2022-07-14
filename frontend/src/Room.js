@@ -31,21 +31,20 @@ import ThreeDSpace from "./components/3DView/App";
 import styled from "styled-components";
 import * as THREE from "three";
 const LeaveRoom = styled.div`
-position:absolute;
-top:20px;
-left:20px;
-width:100px;
-display:flex;
-justify-content:center;
-align-items:center;
-border:1px solid black;
-padding:10px;
-color:white;
-border-radius:10px;
-background-color:#7d327d;
-cursor:pointer;
-z-index:1000;
-
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid black;
+  padding: 10px;
+  color: white;
+  border-radius: 10px;
+  background-color: #7d327d;
+  cursor: pointer;
+  z-index: 1000;
 `;
 function Room() {
   const params = useParams();
@@ -55,6 +54,7 @@ function Room() {
   const screenEnabled = useHMSStore(selectIsLocalScreenShared);
   const isConnected = useHMSStore(selectIsConnectedToRoom);
   const hmsActions = useHMSActions();
+  const [videoSrc, setVideoSrc] = useState();
   var peers = useHMSStore(selectPeers);
   // Get the peer who is sharing audio only screenshare
   const [localPeer, setLocalPeer] = useState(useHMSStore(selectLocalPeer));
@@ -96,17 +96,16 @@ function Room() {
       if (videoRef && videoRef.current && track) {
         if (track.enabled) {
           await hmsActions.attachVideo(track.id, videoRef.current);
-          if (videoRef.current) {
-            const map = new THREE.VideoTexture(videoRef.current);
-            console.log(map);
-          }
+          setTimeout(() => {
+            setVideoSrc(videoRef.current);
+          }, 3000);
         } else {
           await hmsActions.detachVideo(track.id, videoRef.current);
         }
       }
     })();
     //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [videoRef]);
+  }, [videoRef, track]);
 
   async function onAudio() {
     await hmsActions.setLocalAudioEnabled(true);
@@ -196,12 +195,13 @@ function Room() {
           zIndex: "0",
           position: "absolute",
           top: "0",
+          opacity: "0",
         }}
       ></video>
 
       <LeaveRoom onClick={leave}>Leave room</LeaveRoom>
       <Suspense fallback={null}>
-        <ThreeDSpace />
+        <ThreeDSpace videoSrc={videoSrc} />
       </Suspense>
     </>
   );

@@ -9,12 +9,12 @@ import dummtTex from "./Assets/dummytexture.jpg";
 
 import ChairJsx from "./Assets/Chair";
 import AddStairs from "./Components/AddStairs";
+import AddScreen from "./Components/AddScreen";
 
 // import Seat from "./Assets/Seat";
 
-function ThreeDSpace() {
+function ThreeDSpace({ videoSrc }) {
   const [users, setUsers] = useState([{}]);
-  const map = useLoader(TextureLoader, dummtTex);
   const createLoc = () => {
     const loc = [];
     let k = 0.31;
@@ -27,8 +27,6 @@ function ThreeDSpace() {
     return loc;
   };
   const chairloc = createLoc();
-  const screenRef = useRef();
-
   const shadowLightRef = useRef();
 
   return (
@@ -58,16 +56,8 @@ function ThreeDSpace() {
           <pointLight position={[50, 16, 0]} intensity={0.1} />
           <pointLight position={[0, 15, 0]} intensity={0.1} />
           <AddStairs />
-
+          <AddScreen videoSrc={videoSrc} />
           {/* <Podium /> */}
-          <mesh
-            position={[-9.6, 9.3, 17]}
-            ref={screenRef}
-            rotation={[0, Math.PI, 0]}
-          >
-            <planeBufferGeometry args={[32, 18]} />
-            <meshBasicMaterial side={THREE.FrontSide} map={map} />
-          </mesh>
           <AddUsers chairLoc={chairloc} />
           {chairloc.map((loc) => (
             <ChairJsx pos={loc} />
