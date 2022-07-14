@@ -116,7 +116,7 @@ function Login() {
         </Link>
       </div>
       <div id="signInButton">
-        {/* <GoogleLogin 
+        <GoogleLogin 
          client_id = {process.env.REACT_APP_CLIENT_ID}
          client_secret= {process.env.REACT_APP_CLIENT_SECRET}
          buttonText= "Login with Google"
@@ -124,7 +124,7 @@ function Login() {
          onFailure= {onFailure}
          cookiePolicy= {'single_host_origin'}
          isSignedIn= {true}
-         /> */}
+         />
       </div>
     </div>
   );

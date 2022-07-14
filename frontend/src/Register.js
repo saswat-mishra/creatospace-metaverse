@@ -131,7 +131,7 @@ const onFailure = (res) => {
             </Link>
           </div>
           <div id="signInButton">
-        {/* <GoogleLogin 
+        <GoogleLogin 
          client_id = {process.env.REACT_APP_CLIENT_ID}
          client_secret= {process.env.REACT_APP_CLIENT_SECRET}
          buttonText= "Register with Google"
@@ -139,7 +139,7 @@ const onFailure = (res) => {
          onFailure= {onFailure}
          cookiePolicy= {'single_host_origin'}
          isSignedIn= {true}
-         /> */}
+         />
       </div>
         </Grid>
       </Grid>
