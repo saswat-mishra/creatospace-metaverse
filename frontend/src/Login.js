@@ -2,7 +2,7 @@ import React, { Component, useState } from 'react';
 // import swal from 'sweetalert2'
 import { Button, TextField, Link } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-// import { GoogleLogin } from 'react-google-login';
+import { GoogleLogin } from 'react-google-login';
 import './Login.css';
 const axios = require('axios');
 function Login() {
@@ -116,7 +116,7 @@ function Login() {
         </Link>
       </div>
       <div id="signInButton">
-        {/* <GoogleLogin 
+        {<GoogleLogin 
          client_id = {process.env.REACT_APP_CLIENT_ID}
          client_secret= {process.env.REACT_APP_CLIENT_SECRET}
          buttonText= "Login with Google"
@@ -124,7 +124,7 @@ function Login() {
          onFailure= {onFailure}
          cookiePolicy= {'single_host_origin'}
          isSignedIn= {true}
-         /> */}
+         />}
       </div>
     </div>
   );
