@@ -4,11 +4,12 @@ div {
 
 .heading {
     font: Montserrat;
-    font-size: x-large;
+    font-size: 2vw;
     color: darkorange;
     text-align: center;
-    left: 30vw;
-    top: 2vh;
+    top: 3vh;
+    left: 20vw;
+    /* margin: 0 auto; */
     position: absolute;
 }
 #content{
@@ -20,7 +21,7 @@ div {
     font: Montserrat;
     vertical-align: middle;
     text-align: center;
-    margin: auto;
+    margin: 0 auto;
 }
 #bodydiv{
 background-color: rgb(45 40 84);
@@ -31,14 +32,14 @@ background-color: rgb(45 40 84);
     font: Montserrat;
     height: auto;
     width: auto;
-    padding: 15px;
-    font-size: large;
+    padding: 1vw;
+    font-size: 1.5vw;
     background-color: darkorange;
     color: white;
     border-radius: 8px;
     border: 0;
     box-shadow: 0px 2px 2px 2px rgb(44, 44, 44) ;
-    left: 3.5vh ;
-    top: 3.5vh;
+    left: 1.5vw ;
+    top: 1.5vw;
     position: absolute;
 }
