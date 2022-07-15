@@ -3,9 +3,9 @@ var multer = require("multer");
 var path = require("path");
 var fs = require("fs");
 
-router = express.Router();
+let router = express.Router();
 
-
+//Room Model
 const room = require("../model/room");
 
 var dir = "./uploads";
