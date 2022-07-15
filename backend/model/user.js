@@ -6,6 +6,12 @@ const userSchema = new Schema( {
 		type: String,
 		unique: true
 	},
+	fname: {
+		type: String
+	},
+	lname: {
+		type: String
+	},
 	phone: {
 		type: String
 	},
