@@ -6,8 +6,9 @@ var cors = require("cors");
 var bodyParser = require("body-parser");
 var mongoose = require("mongoose");
 mongoose.connect(
-  "mongodb://localhost:27017/creatoSpace"
+  "mongodb+srv://creatospacemeta:Wx80Hq6fKZxeFg42@cluster0.9no6t.mongodb.net/?retryWrites=true&w=majority"
 );
+const PORT = process.env.PORT || 2000;
 
 
 //Importing Routes
@@ -70,6 +71,6 @@ app.get("/", (req, res) => {
 
 
 
-app.listen(2000, () => {
+app.listen(PORT, () => {
   console.log("Server is Runing On port 2000");
 });
