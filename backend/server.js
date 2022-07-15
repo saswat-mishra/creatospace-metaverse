@@ -215,9 +215,9 @@ const token = jwt.sign(
   }
 );
 
-const template = () => {
-  let temp;
-  axios
+var template = async () => {
+  let temp =
+  await axios
     .post(
       "https://prod-policy.100ms.live/policy/v1/templates",
       JSON.stringify({
@@ -256,18 +256,23 @@ const template = () => {
         },
       }
     )
-    .then((r) => {
-      temp = r.data.name;
-      console.log(temp);
-      // if (temp) {
-        return temp;
-      // }
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+    // .then((r) => {
+    //   temp = r.data.name;
+    //   console.log('from temp', r.data.name);
+    //   // if (temp) {
+    //   return r.data.name;
+    //   // console.log('from temp', r.data.name);
+    //     // }
+    // })
+    // .catch((err) => {
+    //   console.log(err);
+    // });
+    console.log('after temp', temp.data.name);
+    return temp.data.name;
+
 };
 
+console.log(template());
 // const createroom = () => {
   // const data =
   // axios
@@ -306,23 +311,26 @@ const template = () => {
   //   });
 // };
 
-app.post("/add-room", (req, res) => {
+app.post("/add-room", async (req, res) => {
   try {
+    console.log(await template(), 'before function');
+
     if (req.body && req.body.name && req.body.desc && req.body.price && template()) {
-      console.log(template(), 'from function');
+      var tem = await template();
+      console.log(tem, 'from function');
       axios
         .post(
           "https://prod-in2.100ms.live/api/v2/rooms",
           JSON.stringify({
-            name: "workshop-room",
-            description: "This is a test room",
+            name: req.body.name,
+            description: req.body.desc,
+            template: tem,
             recording_info: {
               enabled: true,
               upload_info: {
                 type: "s3",
                 location: "creatospace-hms",
                 prefix: "hms",
-                template: template(),
                 options: { region: "ap-south-1" },
                 credentials: {
                   key: "AKIAXCHBHBOR3ZYHJ5FJ",
@@ -359,7 +367,7 @@ app.post("/add-room", (req, res) => {
               });
             }
           });
-          return res.data.id;
+          // return res.data.id;
         })
         .catch((err) => {
           console.log(err);

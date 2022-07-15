@@ -9,7 +9,7 @@ const server = http.createServer(app);
 const users = [];
 const io = new Server(server, {
   cors: {
-    origin: "https://localhost:3000/",
+    origin: "http://localhost:3000",
     methods: ["GET", "POST"],
   },
 });
@@ -28,7 +28,8 @@ class ConnectedUser {
     this.rotation = newRot;
   }
 }
-server.listen(3001, () => {});
+server.listen(5000, () => {
+});
 io.on("connection", (socket) => {
   socket.on("add-user", (uuid) => {
     socket.broadcast.emit("render-new", { uuid: uuid });

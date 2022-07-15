@@ -36,7 +36,7 @@ function ThreeDSpace({ videoSrc }) {
           style={{ width: "100%", height: "100vh" }}
           shadows={{ type: THREE.PCFSoftShadowMap }}
         >
-          {/* <Stats /> */}
+          <Stats />
           <OrbitControls />
           <directionalLight
             position={[0, 30, -60]}

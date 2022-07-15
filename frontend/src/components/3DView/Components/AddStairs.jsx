@@ -20,7 +20,6 @@ const AddStairs = () => {
 
   return (
     <>
-      {" "}
       <Stairs
         cubeGeometry={stairGeometry}
         material={stairMat}

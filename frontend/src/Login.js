@@ -1,5 +1,5 @@
 import React, { Component, useState } from 'react';
-// import swal from 'sweetalert2'
+import swal from 'sweetalert2'
 import { Button, TextField, Link } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 // import { GoogleLogin } from 'react-google-login';
@@ -15,7 +15,7 @@ function Login() {
 
   // const onChange = (e) => this.setState({ [e.target.name]: e.target.value });
 
-  const history = useNavigate();
+  const nav = useNavigate();
 
   const login = () => {
 
@@ -30,15 +30,15 @@ function Login() {
       localStorage.setItem('token', res.data.data.token);
       localStorage.setItem('user_id', res.data.data.uid);
       console.log(res);
-      history("/feed")
+      nav('feed');
       // console.log(history, 'test2')
     }).catch((err) => {
       if (err.response && err.response.data && err.response.data.errorMessage) {
-        // new swal({
-        //   text: err.response.data.errorMessage,
-        //   icon: "error",
-        //   type: "error"
-        // });
+        new swal({
+          text: err.response.data.errorMessage,
+          icon: "error",
+          type: "error"
+        });
       }
     });
   }
@@ -52,15 +52,15 @@ function Login() {
       localStorage.setItem('token', res.data.data.token);
       localStorage.setItem('user_id', res.data.data.uid);
       console.log(res);
-      history("/feed")
+      nav('feed');
       // console.log(history, 'test2')
     }).catch((err) => {
       if (err.response && err.response.data && err.response.data.errorMessage) {
-        // new swal({
-        //   text: err.response.data.errorMessage,
-        //   icon: "error",
-        //   type: "error"
-        // });
+        new swal({
+          text: err.response.data.errorMessage,
+          icon: "error",
+          type: "error"
+        });
       }
     });
   }

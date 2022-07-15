@@ -9,7 +9,7 @@ import useUtkarsh from "./Characters/utkarsh";
 import KeyboardControls from "../Utils/Controls";
 import UpdateCam from "../Utils/Camera";
 import useStore from "../store";
-const socket = io.connect("https://localhost:3001/");
+const socket = io.connect("http://localhost:5000/");
 
 const AddUsers = () => {
   const CollisionObj = useStore((state) => state.CollisionObj);
