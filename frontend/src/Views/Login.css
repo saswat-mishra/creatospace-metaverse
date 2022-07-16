@@ -1,10 +1,8 @@
 body {
-  text-align: center;
   /* font-family: 'Roboto', sans-serif; */
   font: Montserrat;
   background-color: rgb(45 40 84);
 }
-
 
 .button_style {
   margin-left: 10px !important;
@@ -17,9 +15,9 @@ body {
 
 h2 {
   font: Montserrat;
-    color: darkorange;
+  color: darkorange;
 }
-#form-box{
+#form-box {
   background-color: white;
   padding-left: 45px;
   padding-right: 45px;
@@ -29,7 +27,7 @@ h2 {
   border-radius: 20px;
   position: absolute;
 }
-#signInButton{
+#signInButton {
   /* border: 1px solid black; */
   margin-top: 10px;
   /* position: absolute; */
