@@ -11,17 +11,17 @@ import UpdateCam from "../Utils/Camera";
 import useStore from "../store";
 const socket = io.connect("http://localhost:5000/");
 
-const AddUsers = () => {
+const AddUsers = ({ selectedChar }) => {
   const CollisionObj = useStore((state) => state.CollisionObj);
 
   const StaticJoe = useJoe(true, true);
-  const static2 = useUtkarsh(true, true);
+  const Joe = useUtkarsh(true, true, selectedChar);
   const { scene, camera } = useThree();
-  const newmesh = static2.gltf.scene;
+  const newmesh = Joe.gltf.scene;
   newmesh.traverse((char) => {
     char.castShadow = true;
   });
-  const actions = static2.actions;
+  const actions = Joe.actions;
   const uuid = uuidv4();
   const boxEnvelope = new THREE.Mesh(
     new THREE.BoxGeometry(0.5, 1, 0.5),

@@ -10,10 +10,16 @@ import KeyboardControls from "../../Utils/Controls";
 import UpdateCam from "../../Utils/Camera";
 import io from "socket.io-client";
 
-export default function useUtkarsh(controlled, tracked) {
+export default function useUtkarsh(controlled, tracked, char) {
   const group = useRef();
 
-  const gltf = useGLTF("/temp/joe.glb");
+  const gltf = useGLTF(
+    char == "Joe"
+      ? "/temp/joe.glb"
+      : char == "Megan"
+      ? "/Megan.glb"
+      : char == "Leonard" && "/leonard.glb"
+  );
   group.current = gltf.scene;
   const { actions } = useAnimations(gltf.animations, gltf.scene);
   const { camera, scene, gl } = useThree();
