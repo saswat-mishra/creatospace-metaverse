@@ -21,14 +21,17 @@ const userSchema = new Schema( {
 	bio: {
 		type: String
 	},
-	userType:{
-		type: String
-	},
 	isCreator:{
-		type: Boolean
+		type: Boolean,
+		default: false
 	},
 	creatorSubs: {
-		type: Number
+		type: Number,
+		default: 0
+	},
+	tickets: {
+		type: Number,
+		default: 0
 	},
 	AuthType:{
 		type: String

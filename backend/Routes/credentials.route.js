@@ -9,40 +9,6 @@ var user = require("../model/user");
 var jwt = require("jsonwebtoken");
 var uuid4 = require("uuid4");
 
-
-router.use("/", (req, res, next) => {
-  try {
-    if (req.path == "/login" || req.path == "/register" || req.path == "/" || req.path == "/creator") {
-      next();
-    } else {
-      /* decode jwt token if authorized*/
-      jwt.verify(req.headers.token, "shhhhh11111", function (err, decoded) {
-        if (decoded && decoded.user) {
-          req.user = decoded;
-          next();
-        } else {
-          return res.status(401).json({
-            errorMessage: "User unauthorized!",
-            status: false,
-          });
-        }
-      });
-    }
-  } catch (e) {
-    res.status(400).json({
-      errorMessage: "Something went wrong!",
-      status: false,
-    });
-  }
-});
-
-router.get("/", (req, res) => {
-  res.status(200).json({
-    status: true,
-    title: "Apis",
-  });
-});
-
 /* login api */
 router.post("/login", (req, res) => {
   //google Oauth login
@@ -99,6 +65,7 @@ router.post("/register", (req, res) => {
                 status: false,
               });
             } else {
+              console.log("Registered Successfully.");
               res.status(200).json({
                 status: true,
                 title: "Registered Successfully.",

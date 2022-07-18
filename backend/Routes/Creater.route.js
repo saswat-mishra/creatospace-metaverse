@@ -16,9 +16,11 @@ router.post("/", (req, res) => {
                 });
             }else {
                 let Creator = new creator({
-                    name: req.body.name,
-                    email: req.body.email,
-                    isCreator: true
+                    cname: req.body.cname,
+                    cmail: req.body.cmail,
+                    isCreator: true,
+					subscriber: req.body.subscriber,
+					roomsOwned: req.body.roomsOwned
                 });
                 Creator.save((err, data) => {
                     if (err) {
@@ -27,7 +29,7 @@ router.post("/", (req, res) => {
                             status: false,
                         });
                     } else {
-                        console.log(req.body.name);
+                        console.log(req.body.cname);
                         res.status(200).json({
                             status: true,
                             title: "Mission Acomplished",                   
@@ -50,9 +52,23 @@ router.get("/", (req, res) => {
 	        return next(error);
 	    } else {
 	        res.json(data);
+			console.log(data);
 	    }
+	});
 });
-});
+
+router.get("/:id",(req, res) => {
+	creator.findById(
+		req.params.id, (error, data) => {
+	if (error) {
+		console.log(err)
+	} else {
+		res.json(data);
+		console.log("Result : ", data);
+	}
+	});
+})
+
 
 // Update creator
 router

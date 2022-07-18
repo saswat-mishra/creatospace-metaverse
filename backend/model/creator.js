@@ -2,19 +2,16 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
   
 let creatorSchema = new Schema({
-  name: {
+  cname: {
     type: String
   },
-  email: {
+  cmail: {
     type: String
   },
   isCreator: {
     type: Boolean
   },
   subscriber: {
-    type: Number
-  },
-  Likes: {
     type: Number
   },
   roomsOwned: {

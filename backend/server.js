@@ -4,9 +4,9 @@ var jwt = require("jsonwebtoken");
 var cors = require("cors");
 var bodyParser = require("body-parser");
 var mongoose = require("mongoose");
-mongoose.connect(
-  "mongodb+srv://creatospacemeta:Wx80Hq6fKZxeFg42@cluster0.9no6t.mongodb.net/?retryWrites=true&w=majority"
-);
+const url = 'mongodb://localhost:27017/CreatoSapce';
+const Url = "mongodb+srv://creatospacemeta:Wx80Hq6fKZxeFg42@cluster0.9no6t.mongodb.net/?retryWrites=true&w=majority";
+mongoose.connect(Url);
 
 //Running On
 const PORT = process.env.PORT || 2000;
@@ -15,6 +15,7 @@ const PORT = process.env.PORT || 2000;
 const creatorRoute = require('./Routes/Creater.route');
 const roomRoute = require('./Routes/room.route');
 const credRoute = require('./Routes/credentials.route');
+const userRoute = require('./Routes/Users.route');
 
 
 app.use(cors());
@@ -30,6 +31,7 @@ app.use(
 app.use('/creator', creatorRoute);
 app.use('/', roomRoute);
 app.use('/', credRoute);
+app.use('/', userRoute);
 
 app.use("/", (req, res, next) => {
   try {
