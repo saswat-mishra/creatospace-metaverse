@@ -24,6 +24,12 @@ const userSchema = new Schema( {
 	userType:{
 		type: String
 	},
+	isCreator:{
+		type: Boolean
+	},
+	creatorSubs: {
+		type: Number
+	},
 	AuthType:{
 		type: String
 	},

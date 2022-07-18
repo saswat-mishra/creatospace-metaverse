@@ -7,9 +7,10 @@ roomSchema = new Schema( {
 	price: Number,
 	hms_id: String,
 	image: String,
+	isEvent: Boolean,
 	user_id: Schema.ObjectId,
 	is_delete: { type: Boolean, default: false },
-	joinees: {type: [Schema.ObjectId], default:  []},
+	joinees: {type: [Schema.ObjectId], default:  ["Workshop Room","Video Room", "Hangout Space", "Discussion Night"]},
 	date : { type : Date, default: Date.now }
 }),
 room = mongoose.model('room', roomSchema);

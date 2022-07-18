@@ -10,6 +10,15 @@ let creatorSchema = new Schema({
   },
   isCreator: {
     type: Boolean
+  },
+  subscriber: {
+    type: Number
+  },
+  Likes: {
+    type: Number
+  },
+  roomsOwned: {
+    type: Number
   }
 },)
   

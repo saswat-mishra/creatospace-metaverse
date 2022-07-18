@@ -43,7 +43,7 @@ router.post("/", async (req, res) => {
         var tem = await template();
         console.log(tem, 'from function');
         axios
-          .post(
+          .post (
             "https://prod-in2.100ms.live/api/v2/rooms",
             JSON.stringify({
               name: req.body.name,
@@ -107,6 +107,7 @@ router.post("/", async (req, res) => {
         errorMessage: "Something went wrong!",
         status: false,
       });
+
     }
   });
   

@@ -213,24 +213,18 @@ var template = async () => {
           "Content-Type": "application/json",
         },
       }
-    )
-    // .then((r) => {
-    //   temp = r.data.name;
-    //   console.log('from temp', r.data.name);
-    //   // if (temp) {
-    //   return r.data.name;
-    //   // console.log('from temp', r.data.name);
-    //     // }
-    // })
-    // .catch((err) => {
-    //   console.log(err);
-    // });
-    console.log('after temp', temp.data.name);
-    return temp.data.name;
+    ).then((r) => {
+      console.log('from temp', r.data.name);
+      return r.data.name;
+    }).catch((err) => {
+      console.log(err);
+    });
+    // console.log('after temp', temp.data.name);
+    // return temp.data.name;
 
 };
 
-console.log(template());
+// console.log(template());    //Commented By Aman Beacuse This is causing Promise <pending> error.
 // const createroom = () => {
   // const data =
   // axios
