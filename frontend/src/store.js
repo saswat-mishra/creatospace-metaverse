@@ -1,7 +1,6 @@
 import create from "zustand";
 import axios from "axios";
 const API = "http://localhost:2000";
-const token = localStorage.getItem("token");
 
 let useStore = (set) => ({
   rooms: [],
@@ -14,6 +13,7 @@ let useStore = (set) => ({
   //
   getRooms: async () => {
     try {
+      const token = localStorage.getItem("token");
       const res = await axios.get(`${API}/all-rooms`, {
         headers: {
           "Access-Control-Allow-Origin": "*",
@@ -28,6 +28,7 @@ let useStore = (set) => ({
   },
   getCreators: async () => {
     try {
+      const token = localStorage.getItem("token");
       const res = await axios.get(`${API}/creator`, {
         headers: {
           "Access-Control-Allow-Origin": "*",
@@ -35,7 +36,7 @@ let useStore = (set) => ({
           token: token,
         },
       });
-      console.log(res.data)
+      console.log(res.data);
       set({ creators: res.data });
     } catch (error) {
       console.log(error);
@@ -43,6 +44,7 @@ let useStore = (set) => ({
   },
   getHMSId: async (room_id) => {
     try {
+      const token = localStorage.getItem("token");
       const res = await axios.post(
         `${API}/get-room`,
         JSON.stringify({ id: room_id }),

@@ -51,12 +51,10 @@ function Feed() {
   hmsActions.setLogLevel(HMSLogLevel.WARN);
   useEffect(() => {
     getRooms();
+    getCreators();
   }, []);
   const getCreators = useStore((state) => state.getCreators);
   hmsActions.setLogLevel(HMSLogLevel.WARN);
-  useEffect(() => {
-    getCreators();
-  }, []);
 
   return (
     <FeedContainer>
@@ -67,15 +65,15 @@ function Feed() {
       <section id="user-friends">
         <SubHead>Creators</SubHead>
         {creators.map((e, index) => (
-            <Creatorcard
-              name={e.cname}
-              desc={e.roomsOwned}
-              price={e.subscriber}
-              id={e._id}
-              key={index}
-            ></Creatorcard>
-          ))}
-    </section>
+          <Creatorcard
+            name={e.cname}
+            desc={e.roomsOwned}
+            price={e.subscriber}
+            id={e._id}
+            key={index}
+          ></Creatorcard>
+        ))}
+      </section>
       {rooms ? (
         <RoomContainer>
           {rooms.map((e, index) => (
