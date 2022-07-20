@@ -34,8 +34,106 @@ var upload = multer({
   },
 });
 
+var axios = require("axios");
+// const { token } = require("./utils/hmsmangtoken.js");
+// var mang = require('./utils/hmsmangtoken.js')
+var app_access_key = "62bb69b476f8697390a6a7da";
+var app_secret =
+  "V3s1siiqQZfBoBuVHgb_OUUkkl6cFzfsRxK-GsmkXwZepVLZiyna8ZSRAIBZuvO6TqppYx9bBZseApyWAFCKRounMCvAqdGAX9-xA3vsUusWr4xGkHqEWaLjL4xRcgE5TDDZ-jkNISuWlAoKDc-utBUg-ya2b_zgywuUeIudF1Q=";
+  var jwt = require("jsonwebtoken");
+  var uuid4 = require("uuid4");
 
-router.post("/", async (req, res) => {
+  const token = jwt.sign(
+  {
+    access_key: app_access_key,
+    type: "management",
+    version: 2,
+    iat: Math.floor(Date.now() / 1000) - 20,
+    nbf: Math.floor(Date.now() / 1000),
+  },
+  app_secret,
+  {
+    algorithm: "HS256",
+    expiresIn: "24h",
+    jwtid: uuid4(),
+  }
+);
+
+var template = async () => {
+  let temp =
+  await axios
+    .post(
+      "https://prod-policy.100ms.live/policy/v1/templates",
+      JSON.stringify({
+        name: "template",
+        default: true,
+        roles: {
+          speaker: {
+            name: "speaker",
+            publishParams: {
+              allowed: ["screen", "audio"],
+              audio: {
+                bitRate: 32,
+                codec: "opus",
+              },
+              video: {
+                bitRate: 250,
+                codec: "vp8",
+                frameRate: 30,
+                width: 480,
+                height: 270
+            },
+              screen: {
+                codec: "vp8",
+                frameRate: 10,
+                width: 1920,
+                height: 1080,
+              },
+            },
+          },
+          attendee: {
+            name: "attendee",
+            publishParams: {
+              allowed: ["audio"],
+              audio: {
+                bitRate: 32,
+                codec: "opus",
+              },
+              video: {
+                bitRate: 250,
+                codec: "vp8",
+                frameRate: 30,
+                width: 480,
+                height: 270
+            },
+              screen: {
+                codec: "vp8",
+                frameRate: 10,
+                width: 1920,
+                height: 1080,
+              },
+            },
+          }
+        },
+      }),
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    ).then((r) => {
+      console.log('from temp', r);
+      return r;
+    }).catch((err) => {
+      console.log(err);
+    });
+    console.log('after temp', temp.data.name);
+    return temp.data.name;
+
+};
+
+router.post("/add-room", async (req, res) => {
     try {
       console.log(await template(), 'before function');
   
@@ -71,6 +169,7 @@ router.post("/", async (req, res) => {
             }
           )
           .then((resp) => {
+            console.log(resp.data.id, req);
             let new_room = new room();
             new_room.name = req.body.name;
             new_room.desc = req.body.desc;

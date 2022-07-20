@@ -29,7 +29,6 @@ app.use(
 
 //Using Routes
 app.use('/creator', creatorRoute);
-app.use('/', roomRoute);
 app.use('/', credRoute);
 app.use('/', userRoute);
 
@@ -58,6 +57,9 @@ app.use("/", (req, res, next) => {
     });
   }
 });
+
+app.use('/', roomRoute);
+
 
 app.get("/", (req, res) => {
   res.status(200).json({

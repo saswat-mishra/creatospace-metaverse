@@ -6,7 +6,6 @@ let router = express.Router();
 
 //User Model
 var user = require("../model/user");
-var jwt = require("jsonwebtoken");
 var uuid4 = require("uuid4");
 
 /* login api */
@@ -152,17 +151,10 @@ var template = async () => {
           speaker: {
             name: "speaker",
             publishParams: {
-              allowed: ["video", "screen", "audio"],
+              allowed: ["screen", "audio"],
               audio: {
                 bitRate: 32,
                 codec: "opus",
-              },
-              video: {
-                bitRate: 250,
-                codec: "vp8",
-                frameRate: 30,
-                width: 480,
-                height: 270,
               },
               screen: {
                 codec: "vp8",
@@ -172,6 +164,16 @@ var template = async () => {
               },
             },
           },
+          attendee: {
+            name: "attendee",
+            publishParams: {
+              allowed: ["audio"],
+              audio: {
+                bitRate: 32,
+                codec: "opus",
+              }
+            },
+          }
         },
       }),
       {
