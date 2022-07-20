@@ -13,9 +13,15 @@ import {
 import * as SkeletonUtils from "three/examples/jsm/utils/SkeletonUtils";
 
 const SelectCharacter = ({ charID }) => {
-  const JoeRef = useGLTF("/temp/joe.glb");
-  const MeganRef = useGLTF("/Megan.glb");
-  const LeonardRef = useGLTF("/leonard.glb");
+  const JoeRef = useGLTF(
+    "https://creatospace-glb.s3.ap-south-1.amazonaws.com/joe.glb"
+  );
+  const MeganRef = useGLTF(
+    "https://creatospace-glb.s3.ap-south-1.amazonaws.com/Megan.glb"
+  );
+  const LeonardRef = useGLTF(
+    "https://creatospace-glb.s3.ap-south-1.amazonaws.com/leonard.glb"
+  );
 
   const Joe = SkeletonUtils.clone(JoeRef.scene);
   const Megan = SkeletonUtils.clone(MeganRef.scene);
