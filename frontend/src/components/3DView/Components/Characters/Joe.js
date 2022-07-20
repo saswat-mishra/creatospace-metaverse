@@ -13,7 +13,9 @@ import io from "socket.io-client";
 export default function useJoe(controlled, tracked) {
   const group = useRef();
 
-  const gltf = useGLTF("/joe.glb");
+  const gltf = useGLTF(
+    "https://creatospace-glb.s3.ap-south-1.amazonaws.com/joe.glb"
+  );
   group.current = gltf.scene;
   const { actions } = useAnimations(gltf.animations, gltf.scene);
   const { camera, scene, gl } = useThree();
@@ -21,4 +23,4 @@ export default function useJoe(controlled, tracked) {
   return { gltf, Scene: gltf.scene, actions };
 }
 
-useGLTF.preload("/joe.glb");
+useGLTF.preload("https://creatospace-glb.s3.ap-south-1.amazonaws.com/joe.glb");

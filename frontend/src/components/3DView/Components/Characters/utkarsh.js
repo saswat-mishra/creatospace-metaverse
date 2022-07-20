@@ -9,16 +9,17 @@ import * as THREE from "three";
 import KeyboardControls from "../../Utils/Controls";
 import UpdateCam from "../../Utils/Camera";
 import io from "socket.io-client";
-
+let selectedChar;
 export default function useUtkarsh(controlled, tracked, char) {
   const group = useRef();
-
+  selectedChar = char;
   const gltf = useGLTF(
     char == "Joe"
-      ? "/temp/joe.glb"
+      ? "https://creatospace-glb.s3.ap-south-1.amazonaws.com/joe.glb"
       : char == "Megan"
-      ? "/Megan.glb"
-      : char == "Leonard" && "/leonard.glb"
+      ? "https://creatospace-glb.s3.ap-south-1.amazonaws.com/Megan.glb"
+      : char == "Leonard" &&
+        "https://creatospace-glb.s3.ap-south-1.amazonaws.com/leonard.glb"
   );
   group.current = gltf.scene;
   const { actions } = useAnimations(gltf.animations, gltf.scene);
@@ -60,4 +61,11 @@ export default function useUtkarsh(controlled, tracked, char) {
   return { gltf, Scene: gltf.scene, actions };
 }
 
-useGLTF.preload("/temp/joe.glb");
+useGLTF.preload(
+  selectedChar == "Joe"
+    ? "https://creatospace-glb.s3.ap-south-1.amazonaws.com/joe.glb"
+    : selectedChar == "Megan"
+    ? "https://creatospace-glb.s3.ap-south-1.amazonaws.com/Megan.glb"
+    : selectedChar == "Leonard" &&
+      "https://creatospace-glb.s3.ap-south-1.amazonaws.com/leonard.glb"
+);

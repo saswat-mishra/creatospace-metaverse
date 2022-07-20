@@ -4,19 +4,19 @@ var jwt = require("jsonwebtoken");
 var cors = require("cors");
 var bodyParser = require("body-parser");
 var mongoose = require("mongoose");
-const url = 'mongodb://localhost:27017/CreatoSapce';
-const Url = "mongodb+srv://creatospacemeta:Wx80Hq6fKZxeFg42@cluster0.9no6t.mongodb.net/?retryWrites=true&w=majority";
+var aws = require("aws-sdk");
+const url = "mongodb://localhost:27017/CreatoSapce";
+const Url =
+  "mongodb+srv://creatospacemeta:Wx80Hq6fKZxeFg42@cluster0.9no6t.mongodb.net/?retryWrites=true&w=majority";
 mongoose.connect(Url);
-
 //Running On
 const PORT = process.env.PORT || 2000;
 
 //Importing Routes
-const creatorRoute = require('./Routes/Creater.route');
-const roomRoute = require('./Routes/room.route');
-const credRoute = require('./Routes/credentials.route');
-const userRoute = require('./Routes/Users.route');
-
+const creatorRoute = require("./Routes/Creater.route");
+const roomRoute = require("./Routes/room.route");
+const credRoute = require("./Routes/credentials.route");
+const userRoute = require("./Routes/Users.route");
 
 app.use(cors());
 app.use(express.static("uploads"));
@@ -28,13 +28,18 @@ app.use(
 );
 
 //Using Routes
-app.use('/creator', creatorRoute);
-app.use('/', credRoute);
-app.use('/', userRoute);
+app.use("/creator", creatorRoute);
+app.use("/", credRoute);
+app.use("/", userRoute);
 
 app.use("/", (req, res, next) => {
   try {
-    if (req.path == "/login" || req.path == "/register" || req.path == "/" || req.path == "/creator") {
+    if (
+      req.path == "/login" ||
+      req.path == "/register" ||
+      req.path == "/" ||
+      req.path == "/creator"
+    ) {
       next();
     } else {
       /* decode jwt token if authorized*/
@@ -58,8 +63,7 @@ app.use("/", (req, res, next) => {
   }
 });
 
-app.use('/', roomRoute);
-
+app.use("/", roomRoute);
 
 app.get("/", (req, res) => {
   res.status(200).json({
@@ -67,7 +71,6 @@ app.get("/", (req, res) => {
     title: "Apis",
   });
 });
-
 
 app.listen(PORT, () => {
   console.log("Server is Runing On port 2000");

@@ -6,7 +6,9 @@ import React, { useEffect, useRef } from "react";
 import { useGLTF } from "@react-three/drei";
 export default function ChairJsx({ pos, ...props }) {
   const group = useRef();
-  const { nodes, materials, scene } = useGLTF("/chair-comp.glb");
+  const { nodes, materials, scene } = useGLTF(
+    "https://creatospace-glb.s3.ap-south-1.amazonaws.com/chair-comp.glb"
+  );
   scene.traverse((node) => {
     if (node.isMesh) {
       node.castShadow = true;
@@ -32,4 +34,6 @@ export default function ChairJsx({ pos, ...props }) {
   );
 }
 
-useGLTF.preload("/chair-comp.glb");
+useGLTF.preload(
+  "https://creatospace-glb.s3.ap-south-1.amazonaws.com/chair-comp.glb"
+);

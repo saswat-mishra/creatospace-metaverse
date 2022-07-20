@@ -9,7 +9,10 @@ import { useThree } from "@react-three/fiber";
 import * as THREE from "three";
 export default function Exhibition({ ...props }) {
   const group = useRef();
-  const { nodes, materials } = useGLTF("/exhibition-comp.glb", "/draco-gltf");
+  const { nodes, materials } = useGLTF(
+    "https://creatospace-glb.s3.ap-south-1.amazonaws.com/exhibition-comp.glb",
+    "/draco-gltf"
+  );
 
   return (
     <group ref={group} {...props} dispose={null} scale={[0.62, 1.3, 0.7]}>
@@ -90,4 +93,6 @@ export default function Exhibition({ ...props }) {
   );
 }
 
-useGLTF.preload("/exhibition-comp.glb");
+useGLTF.preload(
+  "https://creatospace-glb.s3.ap-south-1.amazonaws.com/exhibition-comp.glb"
+);
