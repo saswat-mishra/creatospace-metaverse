@@ -5,19 +5,45 @@ import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import "./Login.css";
 import useStore from "../store";
 import { checkAuth } from "../utils/checkAuth";
+import { GoogleLogin } from 'react-google-login';
+const axios = require('axios');
 // import { is } from "@react-three/fiber/dist/declarations/src/core/utils";
 
 function Login() {
-  const email = useRef();
-  const password = useRef();
+  var email = useRef();
+  var password = useRef();
   const login = useStore((state) => state.login);
   const userLogin = useStore((state) => state.userLogin);
+  const token = localStorage.getItem("token");
   const nav = useNavigate();
   if (userLogin) {
     nav("/feed");
   }
   // Get redirect location or provide fallback
-
+  const onSuccess = (res) => {
+    console.log("Login Success. Current User: ", res.profileObj.name);
+    axios.post('http://localhost:2000/login', {
+      email: res.profileObj.email,
+      password: "$10$1gaworEfgNoApDgHHWl2Kle4",
+    }).then((res) => {
+      localStorage.setItem('token', res.data.data.token);
+      localStorage.setItem('user_id', res.data.data.uid);
+      console.log(res);
+      nav("/feed");
+      // console.log(history, 'test2')
+    }).catch((err) => {
+      if (err.response && err.response.data && err.response.data.errorMessage) {
+        new swal({
+          text: err.response.data.errorMessage,
+          icon: "error",
+          type: "error"
+        });
+      }
+    });
+  }
+  const onFailure = (res) => {
+    console.log("Login Failed. res: ", res);
+  }
   return (
     <>
       {checkAuth() ? (
@@ -68,7 +94,7 @@ function Login() {
             <Link href="/register">Register</Link>
           </div>
           <div id="signInButton">
-            {/* <GoogleLogin 
+            <GoogleLogin 
          client_id = {process.env.REACT_APP_CLIENT_ID}
          client_secret= {process.env.REACT_APP_CLIENT_SECRET}
          buttonText= "Login with Google"
@@ -76,7 +102,7 @@ function Login() {
          onFailure= {onFailure}
          cookiePolicy= {'single_host_origin'}
          isSignedIn= {true}
-         /> */}
+         />
           </div>
         </div>
       )}

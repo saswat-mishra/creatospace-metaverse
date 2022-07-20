@@ -1,9 +1,10 @@
 import React, { Component, useState } from "react";
-// import swal from 'sweetalert2';
+import swal from 'sweetalert2';
 import { Button, TextField, Link, Grid } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-// import { GoogleLogin } from 'react-google-login';
+import { GoogleLogin } from 'react-google-login';
 import useStore from "../store";
+const axios = require('axios');
 
 function Register() {
   const [email, setemail] = useState("");
@@ -12,7 +13,31 @@ function Register() {
 
   const history = useNavigate();
   const register = useStore((state) => state.register);
-
+  const onSuccess= (res)=>{
+    axios.post('http://localhost:2000/register', {
+        email: res.profileObj.email,
+        password: "$10$1gaworEfgNoApDgHHWl2Kle4",
+      }).then((res) => {
+        new swal({
+          text: res.data.title,
+          icon: "success",
+          type: "success"
+        });
+        history('/');
+      }).catch((err) => {
+        console.log(err);
+        new swal({
+          // text: err.response.data.errorMessage,
+          text: err.message,
+          // text: err,
+          icon: "error",
+          type: "error"
+        });
+      });
+  }
+  const onFailure = (res) => {
+    console.log("Login Failed. res: ", res);
+  }
   return (
     <div id="form-box" style={{ marginTop: "200px" }}>
       <Grid>
@@ -81,7 +106,7 @@ function Register() {
             <Link href="/">Login</Link>
           </div>
           <div id="signInButton">
-            {/* <GoogleLogin 
+            <GoogleLogin 
          client_id = {process.env.REACT_APP_CLIENT_ID}
          client_secret= {process.env.REACT_APP_CLIENT_SECRET}
          buttonText= "Register with Google"
@@ -89,7 +114,7 @@ function Register() {
          onFailure= {onFailure}
          cookiePolicy= {'single_host_origin'}
          isSignedIn= {true}
-         /> */}
+         />
           </div>
         </Grid>
       </Grid>
