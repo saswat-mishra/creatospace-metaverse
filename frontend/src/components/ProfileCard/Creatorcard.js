@@ -1,6 +1,9 @@
 import React from "react";
 import JoinForm from "../JoinButton/JoinForm";
 import styled from "styled-components";
+import { render } from "react-dom";
+import { BrowserRouter } from "react-router-dom";
+import {Routes, Route, useNavigate} from 'react-router-dom';
 
 const Card = styled.div`
   font-family: Montserrat, sans-serif;
@@ -58,11 +61,16 @@ display: inline;
 border-radius: 5px;
 padding:3px;
 `;
+
 function Profilecard(props) {
   // console.log(props);
   const name = props.name;
   const desc = props.desc;
   const creator_id = props.id;
+  const navigate = useNavigate();
+const navigateCreator = () => {
+  navigate('/creator/'+creator_id);
+};
   return (
     <Card>
       {/* <SpanPro>{1000}</SpanPro> */}
@@ -75,10 +83,11 @@ function Profilecard(props) {
         <RoomDetails>Subscribers: {desc}</RoomDetails>
       </DetailsContainer>
       <OptButton>Subscribe</OptButton>
-      <ExpButton>Explore more</ExpButton>
+      <ExpButton onClick={navigateCreator} >Explore more</ExpButton>
       {/* <JoinForm id={creator_id} /> */}
     </Card>
   );
+  
 }
 
 export default Profilecard;

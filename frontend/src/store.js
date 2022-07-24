@@ -6,6 +6,7 @@ let useStore = (set) => ({
   rooms: [],
   creators: [],
   HMSId: "",
+  creator:"",
   userLogin: localStorage.getItem("token")
     ? localStorage.getItem("token")
     : null,
@@ -41,6 +42,24 @@ let useStore = (set) => ({
     } catch (error) {
       console.log(error);
     }
+  },
+  getCreator: async (creator_id) => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.get(`${API}/creator/`,
+      JSON.stringify({ id: creator_id }),
+      {
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json",
+          token: token,
+        },
+      }
+    );
+    set({ creator: res.data.creator_id });
+  } catch (error) {
+    console.log(error);
+  }
   },
   getHMSId: async (room_id) => {
     try {

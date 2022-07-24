@@ -3,10 +3,12 @@ import Feed from "./Views/Feed";
 import Login from "./Views/Login";
 import Register from "./Views/Register";
 import Room from "./Views/Room";
+import Creator_profile from "./Views/creator_profile";
 import React from "react";
 import RestrictedRoute from "./utils/RestrictedRoutes";
 import { useEffect } from "react";
 import { gapi } from "gapi-script";
+
 import AWS from "aws-sdk";
 const client_id =
   "215504042537-v5rsk5ss23ktuo28ipe0uq9lm6s01t1i.apps.googleusercontent.com";
@@ -20,7 +22,6 @@ function App() {
     }
     gapi.load("client: auth2", start);
   });
-
   return (
     <div>
       <Routes>
@@ -37,6 +38,8 @@ function App() {
         />
 
         <Route path="/room/:id" element={<Room />} />
+        <Route path="/creator/:id" element={<Creator_profile />} />
+
       </Routes>
     </div>
   );

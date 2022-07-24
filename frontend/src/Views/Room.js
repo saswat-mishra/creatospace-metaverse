@@ -107,7 +107,6 @@ const Room = () => {
         id="src-icon"
         onClick={async () => {
           await hmsActions.setScreenShareEnabled(true, { videoOnly: true });
-          await hmsStore.getState(selectScreenShareByPeerID(presenter.id));
         }}
         color="primary"
         aria-label="speak"
